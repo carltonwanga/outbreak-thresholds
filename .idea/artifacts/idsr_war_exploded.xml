@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="idsr:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/idsr_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="idsr/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="idsr" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Spring-4.3.18.RELEASE" />
+          <element id="library" level="project" name="Spring Security-3.2.5" />
+          <element id="library" level="project" name="Spring MVC-4.3.18.RELEASE" />
+          <element id="library" level="project" name="groovy-all-2.4.13" />
+          <element id="library" level="project" name="postgresql-42.2.1" />
+          <element id="library" level="project" name="org.codehaus.groovy.modules.http-builder:http-builder:0.7.1" />
+          <element id="library" level="project" name="org.apache.poi:poi-ooxml:3.16" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

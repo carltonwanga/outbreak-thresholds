@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="idsr">
+    <output-path>D:/upload</output-path>
+    <root id="archive" name="idsr.war">
+      <element id="artifact" artifact-name="idsr:war exploded" />
+    </root>
+  </artifact>
+</component>
