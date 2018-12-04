@@ -6,7 +6,8 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
 
     requires: [
         'Idsr.view.malariavisualbuilder.MalariaVisualBuilderModel',
-		'Idsr.view.malariavisualbuilder.MalariaVisualBuilderController'
+		'Idsr.view.malariavisualbuilder.MalariaVisualBuilderController',
+        'Ext.chart.*'
     ],
     xtype: 'malariavisualbuilder',
 

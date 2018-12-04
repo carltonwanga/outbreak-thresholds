@@ -19,8 +19,14 @@ Ext.define('Idsr.Application', {
         'CartesianSeries'
     ],
     views: [
-        'Idsr.view.*'
-
+        'Idsr.view.malariacalculatethreshold.MalariaCalculateThreshold',
+        'Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputationResults',
+        'Idsr.view.malariathresholdmap.MalariaThresholdMap',
+        'Idsr.view.malariathresholdtracker.MalariaThresholdTracker',
+        'Idsr.view.malariavisualbuilder.MalariaVisualBuilder',
+        'Idsr.view.weeklyepidemicdataimportresults.WeeklyEpidemicDataImportResults',
+        'Idsr.view.malariavisualbuilder.MalariaVisualBuilder',
+        'Idsr.view.weeklyepidemichistoricrecords.WeeklyEpidemicHistoricRecords'
     ],
     
     launch: function () {

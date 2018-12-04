@@ -15,7 +15,6 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
     requires: [
         'Ext.util.DelayedTask',
         'Idsr.view.malariavisualbuilder.FieldPropertiesContainer',
-        'Idsr.view.plugins.logaxis.Logarithmic',
         'Ext.chart.theme.*'
     ],
     onCountySelect:function(combo){

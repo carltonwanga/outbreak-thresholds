@@ -6,7 +6,10 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
 
     requires: [
         'Idsr.view.malariathresholdtracker.MalariaThresholdTrackerModel',
-		'Idsr.view.malariathresholdtracker.MalariaThresholdTrackerController'
+		'Idsr.view.malariathresholdtracker.MalariaThresholdTrackerController',
+        'Ext.chart.interactions.PanZoom',
+        'Ext.chart.series.Line',
+        'Ext.chart.interactions.ItemHighlight'
     ],
     xtype: 'malariathresholdtracker',
 

@@ -17,7 +17,7 @@ Ext.define('Idsr.store.NavigationTree', {
                 routeId: 'dashboard',
                 leaf: 'true'
             },
-            {
+         /*   {
                 text: 'User Setup',
                 iconCls: 'x-fa fa-users',
                 expanded: true,
@@ -38,7 +38,7 @@ Ext.define('Idsr.store.NavigationTree', {
                         leaf: true
                     }
                 ]
-            },
+            },*/
             {
                 text: 'Weekly Epidemic Data',
                 iconCls: 'x-fa fa-list',
