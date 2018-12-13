@@ -99,8 +99,12 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
     onThresholdStoreLoad:function(store, records, success, operation){
         this.getView().unmask();
         var thresholdChartResultsStore = this.getStore("thresholdChartResults");
-        thresholdChartResultsStore.removeAll();
-        thresholdChartResultsStore.add(records);
+
+        if(thresholdChartResultsStore!=null){
+            thresholdChartResultsStore.removeAll();
+            thresholdChartResultsStore.add(records);
+        }
+        this.getViewModel().set("dataStoreLoaded",true);
     },
     yAxisItemSelect:function(rowmodel, record, index){
         var selectedContainerId = record.get("value")+'-y';
@@ -259,268 +263,424 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
             if(yAxisStore.getCount()==0){
                 Ext.Msg.alert("Error","Please set at least one Y-Axis field");
             }else{
-                var xAxisItem = xAxisStore.getAt(0);
-                var xAxisItemId = xAxisItem.get("value")+'-x';
-
-                var chartAxes = [];
-                var chartSeries = [];
-
-                var bottomAxisConfig = {
-                    type: 'category',
-                    fields: xAxisItem.get("value"),
-                    position: 'bottom',
-                    grid: true
-                }
-
-                var leftAxisFields = [];
-                var rightAxisFields = [];
-
+                var allYAxisSeriesSet = true;
                 yAxisStore.each(function (recordItem) {
 
-                    var configDetails = propertiesPanel.down('#'+recordItem.get("value")+'-y');
-                    var selectedSeries = configDetails.down("#seriesType").getValue();
+                    var selectedSeriesComboValid= propertiesPanel.down('#'+recordItem.get("value")+'-y').down("#seriesType").isValid();
 
-                    var yAxisLocation = configDetails.down("#yAxisLocationCombo").getValue();
-
-                    if(yAxisLocation == 'left'){
-                        leftAxisFields.push(recordItem.get("value"));
-
-                    }else if(yAxisLocation == 'right'){
-                        rightAxisFields.push(recordItem.get("value"));
-
-                    }
-
-
-                    if(selectedSeries){
-                        var itemSeriesConfig = {
-                            type: selectedSeries,
-                            title: recordItem.get("name"),
-                            xField: xAxisItem.get("value"),
-                            yField: recordItem.get("value")
-
-                        }
-
-
-                        if(selectedSeries == 'bar'){
-                            itemSeriesConfig.stacked =  false;
-                            var highlightConfig =  {
-
-                            }
-
-                            //Bar highlight Check
-                            var fillStyleCombo = configDetails.down("#mvbFillStyle");
-                            var strokeStyleCombo = configDetails.down("#mvbStrokeStyle");
-
-                            if(fillStyleCombo.isDirty()){
-                                highlightConfig.fillStyle = '#'+fillStyleCombo.getValue();
-                            }
-
-                            if(strokeStyleCombo.isDirty()){
-                                highlightConfig.strokeStyle = '#'+strokeStyleCombo.getValue();
-                            }
-
-                            if(fillStyleCombo.isDirty()||strokeStyleCombo.isDirty()){
-                                itemSeriesConfig.highlight = highlightConfig;
-                            }
-
-                            //Bar Chart Label
-                            var labelDisplayCombo = configDetails.down("#mvbLabelDisplayPicker");
-                            var labelColorPicker = configDetails.down("#mvbLabelColorPicker");
-
-                            var labelConfig = {
-                                field : recordItem.get("value"),
-                                display: labelDisplayCombo.getValue()
-                            }
-
-                            if(labelColorPicker.isDirty()){
-                                labelConfig.color = '#'+labelColorPicker.getValue();
-                            }
-
-                            itemSeriesConfig.label = labelConfig;
-
-                            //Show tooltip Config
-                            /*var showTooltipCheck = configDetails.down("#mvbShowTooltipCheck");
-                            if(showTooltipCheck.getValue()){
-                                itemSeriesConfig.tooltip = {
-                                    renderer: 'onCustomBarTipRender'
-                                }
-                            }*/
-
-
-
-                        }
-
-                        if(selectedSeries == 'line'){
-                            var lineSmoothValue = configDetails.down("#lineSmoothCombo").getValue();
-                            itemSeriesConfig.smooth =  lineSmoothValue;
-
-                            //Line Graph Style Config
-                            var lineStyleConfig = {};
-
-                            var mvblLineWidth = configDetails.down("#mvblLineWidth");
-                            var mvblFillColor = configDetails.down("#mvblFillColor");
-                            var mvblStrokeColor = configDetails.down("#mvblStrokeColor");
-                            var mvblFillOpacity = configDetails.down("#mvblFillOpacity");
-                            var mvblFillCheck = configDetails.down("#mvblFillCheck");
-                            var mvblMarker = configDetails.down("#mvblMarker");
-
-                            if(mvblLineWidth.isDirty()){
-                                lineStyleConfig.lineWidth = mvblLineWidth.getValue();
-                            }
-
-                            if(mvblStrokeColor.isDirty()){
-                                lineStyleConfig.stroke = '#'+mvblStrokeColor.getValue();
-                            }
-
-                            if(mvblFillCheck.getValue()){
-                                if(mvblFillColor.isDirty()){
-                                    lineStyleConfig.fill = '#'+mvblFillColor.getValue();
-                                }
-
-                            }
-
-                            if(mvblFillOpacity.isDirty()){
-                                lineStyleConfig.fillOpacity = mvblFillOpacity.getValue();
-                            }
-
-                            itemSeriesConfig.style = lineStyleConfig;
-
-                            //Marker Config
-                            if(mvblMarker.getValue() != 'none'){
-                                var markerConfig = {
-                                    type: mvblMarker.getValue(),
-                                    fx: {
-                                        duration: 200,
-                                        easing: 'backOut'
-                                     }
-                                }
-
-                                itemSeriesConfig.marker = markerConfig;
-
-                            }
-
-                            //Line Chart Label
-                            var lineLabelDisplayCombo = configDetails.down("#mvblLabelDisplayPicker");
-                            var lineLabelColorPicker = configDetails.down("#mvblLabelColorPicker");
-
-                            var labelConfig = {
-                                field : recordItem.get("value"),
-                                display: lineLabelDisplayCombo.getValue()
-                            }
-
-                            if(lineLabelColorPicker.isDirty()){
-                                labelConfig.color = '#'+lineLabelColorPicker.getValue();
-                            }
-
-                            itemSeriesConfig.label = labelConfig;
-
-                        }
-
-                        if(selectedSeries == 'scatter'){
-
-                            //Scatter Chart Label
-                            var scatterLabelDisplayCombo = configDetails.down("#mvbsLabelDisplayPicker");
-                            var scatterLabelColorPicker = configDetails.down("#mvbsLabelColorPicker");
-
-                            var labelConfig = {
-                                field : recordItem.get("value"),
-                                display: scatterLabelDisplayCombo.getValue()
-                            }
-
-                            if(scatterLabelColorPicker.isDirty()){
-                                labelConfig.color = '#'+scatterLabelColorPicker.getValue();
-                            }
-
-                            itemSeriesConfig.label = labelConfig;
-
-                        }
-                        chartSeries.push(itemSeriesConfig);
+                    if(!selectedSeriesComboValid){
+                        allYAxisSeriesSet = false
 
                     }
                 });
+                if(allYAxisSeriesSet){
+                    var xAxisTitleConfig = {}
+                    var xAxisItem = xAxisStore.getAt(0);
+                    var xAxisItemId = xAxisItem.get("value")+'-x';
 
 
-                chartAxes.push(bottomAxisConfig);
+                    var xAxisConfigDetails = propertiesPanel.down('#'+xAxisItemId);
 
-                if(leftAxisFields.length > 0){
-                    var leftAxisConfig = {
-                        type: 'logarithmic',
-                        fields: leftAxisFields,
-                        position: 'left',
+
+                    var chartAxes = [];
+                    var chartSeries = [];
+
+                    var bottomAxisConfig = {
+                        type: 'category',
+                        fields: xAxisItem.get("value"),
+                        position: 'bottom',
                         grid: true
                     }
 
-                    chartAxes.push(leftAxisConfig);
+                    var xAxisTitleTxt = xAxisConfigDetails.down("#mvbxTitleText");
 
-                }
+                    if(xAxisTitleTxt.isDirty()){
+                        xAxisTitleConfig.text = xAxisTitleTxt.getValue();
 
-                if(rightAxisFields.length > 0){
-                    var rightAxisConfig = {
-                        type: 'numeric',
-                        fields: rightAxisFields,
-                        position: 'right',
-                        grid: true
                     }
 
-                    chartAxes.push(rightAxisConfig);
+                    var xAxisFontSize = xAxisConfigDetails.down("#mvbxTitleFontSize");
 
-                }
+                    if(xAxisFontSize.isDirty()){
+                        xAxisTitleConfig.fontSize = xAxisFontSize.getValue();
 
-                var chartStore = me.getStore("yearThresholdResults");
+                    }
 
-                var chartToRender = Ext.create('Ext.chart.CartesianChart', {
-                    xtype: 'cartesian',
-                    reference: 'customChart',
-                    width: '100%',
-                    height: 500,
-                    store: chartStore,
-                    margin: '30 5 5 5',
-                    sprites: [{
-                        type: 'text',
-                        text: chartTitle,
-                        fontSize: 20,
-                        width: 100,
-                        height: 30,
-                        x: 40, // the sprite x position
-                        y: 20  // the sprite y position
-                    }],
-                    flipXY:flipConfig,
-                    legend:chartLegend,
-                    axes: chartAxes,
-                    series: chartSeries,
-                    tbar: [
-                        '->',
-                        {
-                            xtype:'button',
-                            ui:'soft-purple',
-                            iconCls: 'fa fa-toggle-on',
-                            text: 'Change Theme',
-                            handler: 'onChangeChartTheme'
-                        },
-                        {
-                            xtype:'button',
-                            ui:'soft-blue',
-                            iconCls: 'fa fa-expand',
-                            text: 'Preview',
-                            handler: 'onPreviewChart'
-                        },
-                        {
-                            xtype:'button',
-                            ui:'soft-green',
-                            iconCls: 'fa fa-download',
-                            text: 'Download',
-                            handler: 'onDownloadChart'
+                    bottomAxisConfig.title = xAxisTitleConfig;
+
+
+                    var xAxisMinimumField = xAxisConfigDetails.down("#mvbxMinimum");
+                    if(xAxisMinimumField.isDirty()){
+                        bottomAxisConfig.minimum  = xAxisMinimumField.getValue();
+                    }
+
+                    var xAxisGridCheck = xAxisConfigDetails.down("#mvbxGridCheck");
+
+                    if(xAxisGridCheck.isDirty()){
+                        bottomAxisConfig.grid  = xAxisGridCheck.getValue();
+                    }
+
+                    var labelConfig = {};
+
+                    var xAxisLabelFontSizeField = xAxisConfigDetails.down("#mvbxLabelFontSize");
+                    if(xAxisLabelFontSizeField.isDirty()){
+                        labelConfig.fontSize = xAxisLabelFontSizeField.getValue();
+                    }
+
+                    if(xAxisConfigDetails.down("#mvbxRotationCheck").getValue()){
+                        var configuredDegrees = xAxisConfigDetails.down("#mvbxDegrees").getValue();
+                        labelConfig.rotation = {
+                            degrees:configuredDegrees
                         }
 
-                    ]
+                    }
 
-                });
+                    bottomAxisConfig.label = labelConfig;
+
+                    var leftAxisFields = [];
+                    var rightAxisFields = [];
+
+                    yAxisStore.each(function (recordItem) {
+
+                        var configDetails = propertiesPanel.down('#'+recordItem.get("value")+'-y');
+                        var selectedSeries = configDetails.down("#seriesType").getValue();
+
+                        var yAxisLocation = configDetails.down("#yAxisLocationCombo").getValue();
+
+                        if(yAxisLocation == 'left'){
+                            leftAxisFields.push(recordItem.get("value"));
+
+                        }else if(yAxisLocation == 'right'){
+                            rightAxisFields.push(recordItem.get("value"));
+
+                        }
 
 
-                var graphPanel = me.lookupReference('graphPanel');
-                graphPanel.removeAll();
-                graphPanel.add(chartToRender);
+                        if(selectedSeries){
+                            var itemSeriesConfig = {
+                                type: selectedSeries,
+                                title: recordItem.get("name"),
+                                xField: xAxisItem.get("value"),
+                                yField: recordItem.get("value")
+
+                            }
+
+
+                            if(selectedSeries == 'bar'){
+                                itemSeriesConfig.stacked =  false;
+                                var highlightConfig =  {
+
+                                }
+
+                                //Bar highlight Check
+                                var fillStyleCombo = configDetails.down("#mvbFillStyle");
+                                var strokeStyleCombo = configDetails.down("#mvbStrokeStyle");
+
+                                if(fillStyleCombo.isDirty()){
+                                    highlightConfig.fillStyle = '#'+fillStyleCombo.getValue();
+                                }
+
+                                if(strokeStyleCombo.isDirty()){
+                                    highlightConfig.strokeStyle = '#'+strokeStyleCombo.getValue();
+                                }
+
+                                if(fillStyleCombo.isDirty()||strokeStyleCombo.isDirty()){
+                                    itemSeriesConfig.highlight = highlightConfig;
+                                }
+
+                                //Bar Chart Label
+                                var labelDisplayCombo = configDetails.down("#mvbLabelDisplayPicker");
+                                var labelColorPicker = configDetails.down("#mvbLabelColorPicker");
+
+                                var labelConfig = {
+                                    field : recordItem.get("value"),
+                                    display: labelDisplayCombo.getValue()
+                                }
+
+                                if(labelColorPicker.isDirty()){
+                                    labelConfig.color = '#'+labelColorPicker.getValue();
+                                }
+
+                                itemSeriesConfig.label = labelConfig;
+
+                                //Show tooltip Config
+                                /*var showTooltipCheck = configDetails.down("#mvbShowTooltipCheck");
+                                if(showTooltipCheck.getValue()){
+                                    itemSeriesConfig.tooltip = {
+                                        renderer: 'onCustomBarTipRender'
+                                    }
+                                }*/
+
+
+
+                            }
+
+                            if(selectedSeries == 'line'){
+                                var lineSmoothValue = configDetails.down("#lineSmoothCombo").getValue();
+                                itemSeriesConfig.smooth =  lineSmoothValue;
+
+                                //Line Graph Style Config
+                                var lineStyleConfig = {};
+
+                                var mvblLineWidth = configDetails.down("#mvblLineWidth");
+                                var mvblFillColor = configDetails.down("#mvblFillColor");
+                                var mvblStrokeColor = configDetails.down("#mvblStrokeColor");
+                                var mvblFillOpacity = configDetails.down("#mvblFillOpacity");
+                                var mvblFillCheck = configDetails.down("#mvblFillCheck");
+                                var mvblMarker = configDetails.down("#mvblMarker");
+
+                                if(mvblLineWidth.isDirty()){
+                                    lineStyleConfig.lineWidth = mvblLineWidth.getValue();
+                                }
+
+                                if(mvblStrokeColor.isDirty()){
+                                    lineStyleConfig.stroke = '#'+mvblStrokeColor.getValue();
+                                }
+
+                                if(mvblFillCheck.getValue()){
+                                    if(mvblFillColor.isDirty()){
+                                        lineStyleConfig.fill = '#'+mvblFillColor.getValue();
+                                    }
+
+                                }
+
+                                if(mvblFillOpacity.isDirty()){
+                                    lineStyleConfig.fillOpacity = mvblFillOpacity.getValue();
+                                }
+
+                                itemSeriesConfig.style = lineStyleConfig;
+
+                                //Marker Config
+                                if(mvblMarker.getValue() != 'none'){
+                                    var markerConfig = {
+                                        type: mvblMarker.getValue(),
+                                        fx: {
+                                            duration: 200,
+                                            easing: 'backOut'
+                                        }
+                                    }
+
+                                    itemSeriesConfig.marker = markerConfig;
+
+                                }
+
+                                //Line Chart Label
+                                var lineLabelDisplayCombo = configDetails.down("#mvblLabelDisplayPicker");
+                                var lineLabelColorPicker = configDetails.down("#mvblLabelColorPicker");
+
+                                var labelConfig = {
+                                    field : recordItem.get("value"),
+                                    display: lineLabelDisplayCombo.getValue()
+                                }
+
+                                if(lineLabelColorPicker.isDirty()){
+                                    labelConfig.color = '#'+lineLabelColorPicker.getValue();
+                                }
+
+                                itemSeriesConfig.label = labelConfig;
+
+                            }
+
+                            if(selectedSeries == 'scatter'){
+
+                                //Scatter Chart Label
+                                var scatterLabelDisplayCombo = configDetails.down("#mvbsLabelDisplayPicker");
+                                var scatterLabelColorPicker = configDetails.down("#mvbsLabelColorPicker");
+
+                                var labelConfig = {
+                                    field : recordItem.get("value"),
+                                    display: scatterLabelDisplayCombo.getValue()
+                                }
+
+                                if(scatterLabelColorPicker.isDirty()){
+                                    labelConfig.color = '#'+scatterLabelColorPicker.getValue();
+                                }
+
+                                itemSeriesConfig.label = labelConfig;
+
+                                //Scatter chart marker
+                                var scatterLabelFrm = configDetails.down("#mvbsMarkerForm");
+                                var markerConfig = scatterLabelFrm.getForm().getFieldValues(true);
+
+
+                                if(!Ext.Object.isEmpty(markerConfig)){
+                                    itemSeriesConfig.marker = markerConfig;
+
+                                }
+
+                                //Scatter Chart Highlight
+                                var scatterHighlightFrm = configDetails.down("#mvbsHighlightForm");
+                                var highlightConfig = scatterHighlightFrm.getForm().getFieldValues(true);
+
+
+                                if(!Ext.Object.isEmpty(highlightConfig)){
+                                    if(!!highlightConfig.fill){
+                                        highlightConfig.fill = '#'+highlightConfig.fill;
+
+                                    }
+
+                                    if(!!highlightConfig.stroke){
+                                        highlightConfig.stroke = '#'+highlightConfig.stroke;
+
+                                    }
+
+                                    itemSeriesConfig.highlight = highlightConfig;
+
+                                }
+
+                            }
+                            chartSeries.push(itemSeriesConfig);
+
+                        }
+                    });
+
+
+                    chartAxes.push(bottomAxisConfig);
+
+                    if(leftAxisFields.length > 0){
+                        var leftAxisConfig = {
+                            type: 'numeric',
+                            fields: leftAxisFields,
+                            position: 'left',
+                            grid: true
+                        }
+
+                        chartAxes.push(leftAxisConfig);
+
+                    }
+
+                    if(rightAxisFields.length > 0){
+                        var rightAxisConfig = {
+                            type: 'numeric',
+                            fields: rightAxisFields,
+                            position: 'right',
+                            grid: true
+                        }
+
+                        chartAxes.push(rightAxisConfig);
+
+                    }
+
+                    var chartStore = me.getStore("yearThresholdResults");
+
+                    var chartToRender = Ext.create('Ext.chart.CartesianChart', {
+                        xtype: 'cartesian',
+                        reference: 'customChart',
+                        width: '100%',
+                        height: 500,
+                        store: chartStore,
+                        margin: '30 10 10 10',
+                        sprites: [{
+                            type: 'text',
+                            text: chartTitle,
+                            fontSize: 18,
+                            width: 100,
+                            height: 30,
+                            x: 40, // the sprite x position
+                            y: 30  // the sprite y position
+                        }],
+                        flipXY:flipConfig,
+                        legend:chartLegend,
+                        axes: chartAxes,
+                        series: chartSeries,
+                        tbar: [
+                            '->',
+                            {
+                                xtype:'button',
+                                ui:'soft-purple',
+                                iconCls: 'fa fa-toggle-on',
+                                text: 'Change Theme',
+                                handler: 'onChangeChartTheme'
+                            },
+                            {
+                                xtype:'button',
+                                ui:'soft-blue',
+                                iconCls: 'fa fa-expand',
+                                text: 'Preview',
+                                handler: 'onPreviewChart'
+                            },
+                            {
+                                xtype:'button',
+                                ui:'soft-green',
+                                iconCls: 'fa fa-download',
+                                text: 'Download',
+                                handler: 'onDownloadChart'
+                            }
+
+                        ]
+
+                    });
+
+
+                    var graphPanel = me.lookupReference('graphPanel');
+                    graphPanel.removeAll();
+                    graphPanel.add(chartToRender);
+                    me.lookupReference("visualizationBuilderTabPanel").setActiveItem(1);
+
+
+                }else{
+                    Ext.Msg.alert("Error","Please ensure that the series type is set for all Y axis fields");
+
+                }
             }
+
+        }
+
+    },
+    onResetToSeriesDefaults:function(){
+        var me = this;
+        var propertiesPanel = this.lookupReference("propertiesPanel");
+
+        var xAxisStore  = me.getViewModel().getStore("setXAxisFields");
+        var yAxisStore  = me.getViewModel().getStore("setYAxisFields");
+
+        yAxisStore.each(function (recordItem) {
+            var configDetails = propertiesPanel.down('#'+recordItem.get("value")+'-y');
+            var selectedSeries = configDetails.down("#seriesType").getValue();
+            if(selectedSeries){
+                var seriesConfigContainer = configDetails.down('#seriesConfigContainer');
+                seriesConfigContainer.removeAll();
+
+                if(selectedSeries == 'bar'){
+                    seriesConfigContainer.add(
+                        {
+                            xtype:'mvbbarchartseriesconfig'
+                        }
+                    );
+                }else if(selectedSeries == 'line'){
+                    seriesConfigContainer.add(
+                        {
+                            xtype:'mvblinechartseriesconfig'
+                        }
+                    );
+
+                }else if(selectedSeries == 'scatter'){
+                    seriesConfigContainer.add(
+                        {
+                            xtype:'mvbscatterchartseriesconfig'
+                        }
+                    );
+
+                }
+
+            }
+        });
+        if(xAxisStore.getCount()>0){
+            var xRecord = xAxisStore.getAt(0);
+            var recordValue = xRecord.get("value");
+            me.getViewModel().set("xAxisTitle",xRecord.get("name"));
+            var xAxisConfigPanel = propertiesPanel.down("#"+recordValue+'-x');
+            propertiesPanel.remove(xAxisConfigPanel);
+            propertiesPanel.add({
+                xtype:'xaxispropertiescontainer',
+                itemId:recordValue+'-x',
+                title: xRecord.get("name")+' '+'Config'
+            });
+
+            new Ext.util.DelayedTask(function(){
+                propertiesPanel.getLayout().setActiveItem(propertiesPanel.down("#"+recordValue+'-x'));
+            }).delay(200);
+
 
         }
 

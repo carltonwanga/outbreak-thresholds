@@ -58,6 +58,7 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderModel', {
         legendDock:'bottom',
         flipAxis:false,
         xAxisTitle:'',
-        xAxisRotate:false
+        xAxisRotate:false,
+        dataStoreLoaded:false
     }
 });

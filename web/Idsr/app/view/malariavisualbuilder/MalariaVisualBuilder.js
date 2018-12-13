@@ -5,9 +5,10 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
     extend: 'Ext.panel.Panel',
 
     requires: [
-        'Idsr.view.malariavisualbuilder.MalariaVisualBuilderModel',
-		'Idsr.view.malariavisualbuilder.MalariaVisualBuilderController',
-        'Ext.chart.*'
+        'Ext.chart.*',
+        'Ext.toolbar.Fill',
+        'Idsr.view.malariavisualbuilder.MalariaVisualBuilderController',
+        'Idsr.view.malariavisualbuilder.MalariaVisualBuilderModel'
     ],
     xtype: 'malariavisualbuilder',
 
@@ -21,6 +22,7 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
     items: [
         {
             xtype: 'tabpanel',
+            reference: 'visualizationBuilderTabPanel',
             items:[
                 {
                     title:'Graph Builder',
@@ -29,13 +31,12 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
                     items:[
                         {
                             xtype:'panel',
-                            height: 200,
                             region: 'north',
                             split: true,
-                            collapsible: true,
                             margin: '5 5 5 5',
                             bodyPadding: 3,
                             title:'Chart Configurations',
+                            collapsible: true,
                             items:[
                                 {
                                     xtype:'form',
@@ -45,6 +46,7 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
                                     items:[
                                         {
                                             xtype:'fieldcontainer',
+                                            height:32,
                                             layout: 'hbox',
                                             items:[
                                                 {
@@ -144,6 +146,7 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
                                                     fieldLabel: 'Use Log Scale',
                                                     margin: '0 5 0 5',
                                                     labelWidth: 60,
+                                                    hidden:true,
                                                     itemId:'yAxisLogScaleCheck',
                                                     value: false
                                                 },
@@ -201,7 +204,8 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
                             layout: 'fit',
                             width:200,
                             bind:{
-                                store: '{dataFields}'
+                                store: '{dataFields}',
+                                hidden: '{!dataStoreLoaded}'
                             },
                             columns: [
                                 {
@@ -305,9 +309,19 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
                             layout: 'card'
                         }
                     ],
-                    tbar: {
+                    bbar: {
                         xtype: 'toolbar',
                         items:[
+                            '->',
+                            {
+                                xtype: 'button',
+                                text: 'Reset to Series Defaults',
+                                ui: 'soft-red',
+                                iconCls: 'x-fa fa-times',
+                                listeners: {
+                                    click: 'onResetToSeriesDefaults'
+                                }
+                            },
                             {
                                 xtype: 'button',
                                 text: 'Generate Graph',

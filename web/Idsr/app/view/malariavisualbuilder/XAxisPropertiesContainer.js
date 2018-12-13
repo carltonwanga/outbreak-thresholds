@@ -2,7 +2,7 @@
  * Created by PAVILION 15 on 11/27/2018.
  */
 Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.Container',
     xtype: 'xaxispropertiescontainer',
     scrollable: true,
 
@@ -15,6 +15,7 @@ Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
                     xtype: 'textfield',
                     fieldLabel: 'Title',
                     name:'text',
+                    itemId:'mvbxTitleText',
                     bind:{
                         value:'{xAxisTitle}'
                     }
@@ -22,6 +23,7 @@ Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
                 {
                     xtype: 'numberfield',
                     fieldLabel: 'Font Size',
+                    itemId:'mvbxTitleFontSize',
                     value: 11,
                     minValue: 5,
                     maxValue: 100,
@@ -38,12 +40,14 @@ Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
                     xtype: 'numberfield',
                     fieldLabel: 'Minimum',
                     value: 0,
+                    itemId: 'mvbxMinimum',
                     name:'minimum'
 
                 },
                 {
                     xtype: 'checkbox',
                     fieldLabel: 'Show Grid',
+                    itemId: 'mvbxGridCheck',
                     name:'grid',
                     value: true
 
@@ -60,6 +64,7 @@ Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
                     value: 15,
                     minValue: 5,
                     maxValue: 100,
+                    itemId:'mvbxLabelFontSize',
                     name:'fontSize'
                 },
                 {
@@ -71,6 +76,7 @@ Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
                             fieldLabel: 'Rotate',
                             name:'rotation',
                             labelWidth: 50,
+                            itemId:'mvbxRotationCheck',
                             bind:{
                                 value: '{xAxisRotate}'
                             }
@@ -83,6 +89,7 @@ Ext.define('Idsr.view.malariavisualbuilder.XAxisPropertiesContainer', {
                             labelWidth: 50,
                             margin: '0 0 0 4',
                             minValue: -360,
+                            itemId:'mvbxDegrees',
                             maxValue: 360,
                             bind:{
                               hidden: '{!xAxisRotate}'
