@@ -17,14 +17,15 @@ import static groovyx.net.http.Method.GET
 @Service
 class MalariaThresholdsComputationService {
 
-    public final String IDSR_MALARIA_DEATHS_INDICATOR = "vqyFNp0Tyjj"
-    public final String IDSR_MALARIA_POSITIVITY_INDICATOR = "cILf2i4484b"
+    public final String IDSR_MALARIA_DEATHS_INDICATOR = "vqyFNp0Tyjj";
+    public final String IDSR_MALARIA_POSITIVITY_INDICATOR = "cILf2i4484b";
+    public final String IDSR_MALARIA_REPORTING_RATE_INDICATOR = "zJrL4HQqYmD.REPORTING_RATE";
 
     public List fetchMalariaIndicatorsFromDhis2(int week,int currentYear){
         List dataValuesResults = [];
 
         String periodDimension = "&dimension=pe:${currentYear}W${week}";
-        String dataElementDimension = "&dimension=dx:${IDSR_MALARIA_DEATHS_INDICATOR};${IDSR_MALARIA_POSITIVITY_INDICATOR}";
+        String dataElementDimension = "&dimension=dx:${IDSR_MALARIA_DEATHS_INDICATOR};${IDSR_MALARIA_POSITIVITY_INDICATOR};${IDSR_MALARIA_REPORTING_RATE_INDICATOR}";
 
         def http = new HTTPBuilder(Dhis2Api.SUB_COUNTY_WEEK_MALARIA_INDICATORS_BASE_URL+periodDimension+dataElementDimension);
         def basicAuthToken = Api.generateOAuthBasicAuthToken();
@@ -205,6 +206,61 @@ class MalariaThresholdsComputationService {
 
                     long alertThreshold = (long) Math.round(quartile(prevDataValuesArray,75));
                     long actionThreshold = (long)Math.round(calculateMean(prevDataValuesArray)+(2*calculateSD(prevDataValuesArray)));
+                    long casesReportedMean = (long) Math.round(calculateMean(prevDataValuesArray));
+                    long casesReportedSD = (long) Math.round(calculateSD(prevDataValuesArray));
+
+
+                    //Calculate C-SUM
+                    //(Last week Mean + current week mean + Next week mean)/3
+
+                    //Check if next week mean is available
+                    int nextWeek = week+1;
+                    int prevWeek = week-1;
+                    int prevPrevWeek = prevWeek-1;
+
+                    def cSumMeans = sql.rows("SELECT mean,c_sum,c_sum_1_96_sd,cases_reported_sd,week FROM malaria_outbreak_threshold_computation_results WHERE is_active AND week IN($nextWeek,$week,$prevWeek,$prevPrevWeek) AND year = $currentYear AND sub_county = ${subCountyCode}");
+
+                    def nextWeekMeanRes  = cSumMeans.find {
+                        return it.week == nextWeek;
+                    }
+                      Long nextWeekMean = nextWeekMeanRes?.get("mean");
+
+
+                    def prevWeekMeanRes  = cSumMeans.find {
+                        return it.week == prevWeek;
+                    }
+                    Long prevWeekMean = prevWeekMeanRes?.get("mean");
+                    Long prevWeekCsum = prevWeekMeanRes?.get("c_sum");
+                    Long prevWeekCsum196Sd = prevWeekMeanRes?.get("c_sum_1_96_sd");
+                    Long prevWeekCasesReportedSd = prevWeekMeanRes?.get("cases_reported_sd");
+
+
+                    def prevPrevWeekMeanRes  = cSumMeans.find {
+                        return it.week == prevPrevWeek;
+                    }
+                    Long prevPrevWeekMean = prevPrevWeekMeanRes?.get("mean");
+
+
+                    Long currentWeekCsum,currentWeekCsum196Sd;
+
+                    //If previous week mean not available and the week before is available calcuate prev Csum
+                    if(!prevWeekCsum &&prevWeekMean && prevPrevWeekMean){
+                        Long previousWeekCSumCalc = (long)Math.round((prevPrevWeek+prevWeekMean+casesReportedMean)/3);
+                        Long previousWeekCSum196Sd = previousWeekCSumCalc+(1.96*prevWeekCasesReportedSd);
+
+                        //Update previous week C-Sum
+                        Map prevCsumUpdateParams = [csum:previousWeekCSumCalc,csum196sd:previousWeekCSum196Sd,week: prevWeek,year: currentYear,subCounty: subCountyCode];
+                        sql.executeUpdate("UPDATE malaria_outbreak_threshold_computation_results SET c_sum = ?.csum,c_sum_1_96_sd = ?.csum196sd WHERE week = ?.week AND year = ?.year AND is_active AND sub_county = ?.subCounty",prevCsumUpdateParams);
+
+                    }
+
+                    if(prevWeekMean && nextWeekMean){
+                        currentWeekCsum = (long)Math.round((nextWeekMean+prevWeekMean+casesReportedMean)/3);
+                        currentWeekCsum196Sd = currentWeekCsum+(1.96*casesReportedSD);
+
+                    }
+
+
 
 
                     def reportedDeathsMap = malariaIndicators.find {
@@ -216,6 +272,13 @@ class MalariaThresholdsComputationService {
                         return it.week == currentWeekItem.week && it.year == currentWeekItem.year && it.subCounty == currentWeekItem.subCounty && it.dataElement == IDSR_MALARIA_POSITIVITY_INDICATOR;
                     }
                     Integer positivityRate = reportedPositivityMap?.value;
+
+                    def reportingRateMap = malariaIndicators.find {
+                        return it.week == currentWeekItem.week && it.year == currentWeekItem.year && it.subCounty == currentWeekItem.subCounty && it.dataElement == IDSR_MALARIA_REPORTING_RATE_INDICATOR;
+                    }
+
+                    Double reportingRate = reportingRateMap?.value;
+                    Integer extrapolatedCases = (Integer)Math.round((casesReported * 100/reportingRate));
 
 
                     long inference;
@@ -238,7 +301,7 @@ class MalariaThresholdsComputationService {
                             casesReported:casesReported,alertThreshold:alertThreshold,actionThreshold:actionThreshold,
                             inference:inference,batchId: batchId,computationDatasetCount:prevWeeksDataSetCount,
                             expectedDatasetCount:5,active:true,
-                            reportedDeaths:reportedDeaths,positivityRate:positivityRate
+                            reportedDeaths:reportedDeaths,positivityRate:positivityRate,mean:casesReportedMean,csum:currentWeekCsum,csum196sd: currentWeekCsum196Sd, reportingRate:reportingRate,extrapolatedCases:extrapolatedCases,casesSD:casesReportedSD
 
                     ];
 
@@ -247,11 +310,11 @@ class MalariaThresholdsComputationService {
                         sql.executeInsert("""INSERT INTO malaria_outbreak_threshold_computation_results
                                                 (week, year, sub_county, cases_reported, alert_threshold, action_threshold,
                                                  inference_id, batch_id, computation_dataset_count, 
-                                                 expected_dataset_count,is_active,deaths,lab_positivity) 
+                                                 expected_dataset_count,is_active,deaths,lab_positivity,mean,c_sum,c_sum_1_96_sd,reporting_rate,extrapolated_cases,cases_reported_sd) 
                                                  VALUES 
                                                  (?.week,?.year,?.subCounty,?.casesReported,?.alertThreshold,?.actionThreshold,
                                                   ?.inference,?.batchId,?.computationDatasetCount,
-                                                  ?.expectedDatasetCount,?.active,?.reportedDeaths,?.positivityRate
+                                                  ?.expectedDatasetCount,?.active,?.reportedDeaths,?.positivityRate,?.mean,?.csum,?.csum196sd,?.reportingRate,?.extrapolatedCases,?.casesSD
                                                  )
                         """,thresholdComputationParams);
                     }

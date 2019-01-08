@@ -79,7 +79,13 @@ class MalariaThresholdResultsService {
         malaria_outbreak_threshold_computation_results.expected_dataset_count,
         malaria_outbreak_threshold_computation_results.is_active,
         malaria_outbreak_threshold_computation_results.deaths,
-        malaria_outbreak_threshold_computation_results.lab_positivity
+        malaria_outbreak_threshold_computation_results.lab_positivity,
+        malaria_outbreak_threshold_computation_results.mean,
+        malaria_outbreak_threshold_computation_results.c_sum,
+        malaria_outbreak_threshold_computation_results.c_sum_1_96_sd,
+        malaria_outbreak_threshold_computation_results.reporting_rate,
+        malaria_outbreak_threshold_computation_results.extrapolated_cases,
+        malaria_outbreak_threshold_computation_results.cases_reported_sd
         FROM
         malaria_outbreak_threshold_computation_results,
         sub_county,
