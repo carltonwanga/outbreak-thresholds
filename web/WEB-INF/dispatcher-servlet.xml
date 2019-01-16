@@ -7,6 +7,7 @@
 
     <context:component-scan base-package="com.dsru.idsr.controller"/>
 
+
     <bean id="contentNegotiationManager"
           class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="defaultContentType" value="application/json"/>

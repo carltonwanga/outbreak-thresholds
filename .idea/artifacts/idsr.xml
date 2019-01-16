@@ -3,6 +3,13 @@
     <output-path>D:/upload</output-path>
     <root id="archive" name="idsr.war">
       <element id="artifact" artifact-name="idsr:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="javax.mail-1.5.0" />
+          <element id="library" level="project" name="org.springframework.data:spring-data-rest-webmvc:2.6.6.RELEASE" />
+          <element id="library" level="project" name="javax.servlet:jstl:1.2" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>

@@ -1,20 +1,19 @@
-package com.ilab.gateway.service
+package com.dsru.idsr.service
 
-import com.ilab.gateway.db.CommonDbFunctions
-import com.ilab.gateway.db.DataSourceFactory
-import com.ilab.gateway.model.AdminRolesEntity
-import com.ilab.gateway.utils.MyUtil
+import com.dsru.idsr.db.CommonDbFunctions
+import com.dsru.idsr.db.DataSourceFactory
+import com.dsru.idsr.model.AdminRolesEntity
+import com.dsru.idsr.util.CommonUtils
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
-import jdk.nashorn.internal.objects.annotations.Where
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.stereotype.Service
 
 @Service
 class RoleService {
     public String getRoles(Map parameterMap){
-        def params = MyUtil.flattenListParam(parameterMap);
+        def params = CommonUtils.flattenListParam(parameterMap);
         def start = params.start?.toInteger();
         def limit = params.limit?.toInteger();
         def query = params.query;
@@ -45,7 +44,7 @@ class RoleService {
     }
 
     public String getAllocatedPemissions(long roleId,Map parameterMap){
-        def params = MyUtil.flattenListParam(parameterMap);
+        def params = CommonUtils.flattenListParam(parameterMap);
         def start = params.start?.toInteger();
         def limit = params.limit?.toInteger();
         def sqlParams = [roleId: roleId, start: start, limit: limit];
@@ -72,7 +71,7 @@ class RoleService {
 
     public String getUnAllocatedPemissions(long roleId,Map parameterMap){
 
-        def params = MyUtil.flattenListParam(parameterMap);
+        def params = CommonUtils.flattenListParam(parameterMap);
         def start = params.start?.toInteger();
         def limit = params.limit?.toInteger();
         def sqlParams = [roleId: roleId, start: start, limit: limit];
@@ -136,11 +135,12 @@ class RoleService {
 
     }
 
-    public String addRole(String rolesEntity){
+    public String addRole(String reqJson){
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
         Sql sql = new Sql(dataSource);
+        Map rolesEntity = new JsonSlurper().parseText(reqJson);
         Map res = [success: true, status: 0, message: ""];
-        def insertRole = sql.executeInsert("INSERT INTO admin_roles (name) VALUES(?.name)",rolesEntity);
+        def insertRole = sql.executeInsert("INSERT INTO admin_roles(name) VALUES(?.name)",rolesEntity);
         sql.close();
         if(insertRole){
             res.status = 1;

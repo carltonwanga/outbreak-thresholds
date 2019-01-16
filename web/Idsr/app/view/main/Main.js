@@ -86,7 +86,7 @@ Ext.define('Idsr.view.main.Main', {
                     itemId: 'logout',
                     iconCls: 'fa fa-sign-out',
                     listeners: {
-                        click: 'onUpdateNavigationStore'
+                        click: 'logoutClick'
                     }
 
                 }

@@ -138,7 +138,7 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMapController', {
     renderCountiesMap:function(){
         var R = Raphael("counties-map-container", 600, 700),
             attr = {
-                "fill": "#b9b9b9",
+                "fill": "#cccccc",
                 "stroke": "#fff",
                 "stroke-miterlimit": "4",
                 "stroke-width": "1",

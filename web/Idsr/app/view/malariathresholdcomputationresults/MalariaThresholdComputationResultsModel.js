@@ -10,7 +10,8 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
             fields:['id','week','year','sub_county_name','county_name','time_calculated',
                 'cases_reported','alert_threshold','action_threshold','sub_county','narration',
                 'inference_name','alert_color_codes','inference_id','batch_id',
-                'computation_dataset_count','expected_dataset_count','is_active'
+                'computation_dataset_count','expected_dataset_count','is_active',
+                'deaths','lab_positivity','mean','c_sum','c_sum_1_96_sd','reporting_rate','extrapolated_cases','cases_reported_sd'
             ],
             autoLoad: true,
             proxy: {

@@ -9,6 +9,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
 import groovyx.net.http.HTTPBuilder
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.stereotype.Service
 import static groovyx.net.http.ContentType.JSON
@@ -20,6 +21,9 @@ class MalariaThresholdsComputationService {
     public final String IDSR_MALARIA_DEATHS_INDICATOR = "vqyFNp0Tyjj";
     public final String IDSR_MALARIA_POSITIVITY_INDICATOR = "cILf2i4484b";
     public final String IDSR_MALARIA_REPORTING_RATE_INDICATOR = "zJrL4HQqYmD.REPORTING_RATE";
+
+    @Autowired
+    AuditService auditService;
 
     public List fetchMalariaIndicatorsFromDhis2(int week,int currentYear){
         List dataValuesResults = [];
@@ -399,10 +403,13 @@ class MalariaThresholdsComputationService {
         return Math.sqrt(standardDeviation/(length-1));
     }
 
-    public String requestMalariaCalculation(String requestStr){
+    public String requestMalariaCalculation(String requestStr,String ip,String user){
         Map params = new JsonSlurper().parseText(requestStr);
         Map res = [success:true,status:0];
+        auditService.logAuditEvent("Computation of malaria thresholds",ip,user,"Week:"+params.week+",Year:"+params.year);
+
         def batchId = computeMalariaThresholds(params.week,params.year);
+
         if(batchId){
             res.status = 1;
             res.put("data",batchId);

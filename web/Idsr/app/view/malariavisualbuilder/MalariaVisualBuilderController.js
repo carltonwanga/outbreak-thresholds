@@ -367,7 +367,10 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
 
 
                             if(selectedSeries == 'bar'){
+                                //Check  if another bar chart series has been added
+
                                 itemSeriesConfig.stacked =  false;
+
                                 var highlightConfig =  {
 
                                 }
@@ -403,13 +406,6 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
 
                                 itemSeriesConfig.label = labelConfig;
 
-                                //Show tooltip Config
-                                /*var showTooltipCheck = configDetails.down("#mvbShowTooltipCheck");
-                                if(showTooltipCheck.getValue()){
-                                    itemSeriesConfig.tooltip = {
-                                        renderer: 'onCustomBarTipRender'
-                                    }
-                                }*/
 
 
 
@@ -529,6 +525,7 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
                                 }
 
                             }
+
                             chartSeries.push(itemSeriesConfig);
 
                         }

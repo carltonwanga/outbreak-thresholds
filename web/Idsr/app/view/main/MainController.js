@@ -168,7 +168,7 @@ Ext.define('Idsr.view.main.MainController', {
             method:"GET",
             success: function(response, opts) {
                 me.getView().unmask();
-                var rootUrl = IlabPay.util.Constants.rootUrl;
+                var rootUrl = Idsr.util.Constants.rootUrl;
                 window.location.assign(rootUrl);
             },
             failure: function(response, opts) {

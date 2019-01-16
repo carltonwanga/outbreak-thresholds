@@ -2,9 +2,51 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
     <context:property-placeholder location="/WEB-INF/application.properties" />
+
+
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:password-encoder ref="encoder"/>
+            <security:jdbc-user-service data-source-ref="dataSource"
+                               users-by-username-query="SELECT email AS username,password,is_active AS enabled FROM users WHERE email = ?"
+                               authorities-by-username-query="SELECT users.email AS username, admin_permissions.permission_code AS authority FROM users INNER JOIN user_role_allocations ON users.id = user_role_allocations.user_id INNER JOIN admin_role_permissions ON user_role_allocations.role_id = admin_role_permissions.role_id INNER JOIN admin_permissions ON admin_role_permissions.permission_id = admin_permissions.id WHERE users.email = ?"
+
+            />
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <security:http entry-point-ref="restAuthenticationEntryPoint" use-expressions="true">
+        <security:form-login login-processing-url="/app/signin"
+                    username-parameter="username"
+                    password-parameter="password"
+                    authentication-success-handler-ref="mySuccessHandler"
+                    authentication-failure-handler-ref="myFailureHandler"
+        />
+        <security:intercept-url pattern="/app/**" access="permitAll" />
+
+        <!--<security:intercept-url pattern="/app/**" access="authenticated" />-->
+
+    </security:http>
+
+    <bean id="encoder"
+          class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg name="strength" value="11" />
+    </bean>
+
+
+    <bean id="mySuccessHandler"
+                class="com.dsru.idsr.components.SavedRequestAwareAuthenticationSuccessHandler"/>
+    <bean id="myFailureHandler" class=
+            "com.dsru.idsr.components.LogingAuthenticationFailureHandler"/>
+    <bean id="restAuthenticationEntryPoint" class=
+            "com.dsru.idsr.components.RestAuthenticationEntryPoint"/>
+
+
 
     <bean id="dataSource"
                 class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -13,6 +55,25 @@
         <property name="username" value="${jdbc.username}" />
         <property name="password" value="${jdbc.password}" />
     </bean>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${javax.mail.host}" />
+        <property name="port" value="${javax.mail.port}" />
+        <property name="username" value="${javax.mail.username}" />
+        <property name="password" value="${javax.mail.password}" />
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="emailSender" class="com.dsru.idsr.components.EmailSender">
+        <property name="mailSender" ref="mailSender" />
+    </bean>
+
 
     <context:component-scan base-package="com.dsru.idsr.service"/>
 

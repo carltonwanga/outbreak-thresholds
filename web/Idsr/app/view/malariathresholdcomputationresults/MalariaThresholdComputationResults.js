@@ -374,6 +374,18 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                 },
                 {
                     xtype: 'gridcolumn',
+                    dataIndex: 'deaths',
+                    text: 'Deaths',
+                    hidden: true,
+                },
+                {
+                    xtype: 'gridcolumn',
+                    dataIndex: 'lab_positivity',
+                    text: 'Positivity Rate',
+                    hidden: true,
+                },
+                {
+                    xtype: 'gridcolumn',
                     dataIndex: 'alert_color_codes',
                     text: 'Inference',
                     renderer: function (value, meta) {
@@ -506,7 +518,13 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                                     bind: {
                                         value: '{record.action_threshold}'
                                     }
-                                },
+                                }
+                            ]
+                        },
+                        {
+                            xtype:'fieldset',
+                            fieldLabel:'Parameters',
+                            items:[
                                 {
                                     xtype: 'displayfield',
                                     fieldLabel: 'Computed datasets',
@@ -520,7 +538,15 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                                     bind: {
                                         value: '{record.expected_dataset_count}'
                                     }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Reporting rate',
+                                    bind: {
+                                        value: '{record.reporting_rate}%'
+                                    }
                                 }
+
                             ]
                         },
                         {
@@ -538,7 +564,42 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                                     xtype: 'displayfield',
                                     fieldLabel: 'Positivity Rate',
                                     bind: {
-                                        value: '{record.lab_positivity}'
+                                        value: '{record.lab_positivity}%'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Mean',
+                                    bind: {
+                                        value: '{record.mean}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'C-SUM',
+                                    bind: {
+                                        value: '{record.c_sum}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'C-SUM+1.96SD',
+                                    bind: {
+                                        value: '{record.c_sum_1_96_sd}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Extrapolated Cases',
+                                    bind: {
+                                        value: '{record.extrapolated_cases}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'SD',
+                                    bind: {
+                                        value: '{record.cases_reported_sd}'
                                     }
                                 }
                             ]

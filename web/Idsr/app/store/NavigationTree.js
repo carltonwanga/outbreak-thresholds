@@ -17,7 +17,7 @@ Ext.define('Idsr.store.NavigationTree', {
                 routeId: 'dashboard',
                 leaf: 'true'
             },
-         /*   {
+            {
                 text: 'User Setup',
                 iconCls: 'x-fa fa-users',
                 expanded: true,
@@ -38,7 +38,14 @@ Ext.define('Idsr.store.NavigationTree', {
                         leaf: true
                     }
                 ]
-            },*/
+            },
+            {
+                text: 'Template Configuration',
+                iconCls: 'x-fa fa-key',
+                viewType: 'notificationtemplates',
+                routeId: 'emailtemplate',
+                leaf: true
+            },
             {
                 text: 'Weekly Epidemic Data',
                 iconCls: 'x-fa fa-list',
@@ -95,6 +102,28 @@ Ext.define('Idsr.store.NavigationTree', {
                 viewType: 'malariavisualbuilder',
                 routeId: 'malariavisualbuilder',
                 leaf: true
+            },
+            {
+                text: 'Logs',
+                iconCls: 'x-fa fa-clock-o',
+                expanded: true,
+                selectable: false,
+                children: [
+                    {
+                        text: 'Event Log',
+                        iconCls: 'x-fa fa-calendar',
+                        viewType: 'usereventlogs',
+                        routeId: 'usereventlogs',
+                        leaf: true
+                    },
+                    {
+                        text: 'Login Logs',
+                        iconCls: 'x-fa fa-unlock',
+                        viewType: 'userloginlogs',
+                        routeId: 'userloginlogs',
+                        leaf: true
+                    }
+                ]
             },
             {
                 text: 'Profile',
