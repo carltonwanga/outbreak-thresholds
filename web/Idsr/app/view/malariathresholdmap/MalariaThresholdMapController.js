@@ -128,6 +128,7 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMapController', {
                 me.getView().unmask();
                 var responseData = Ext.JSON.decode(response.responseText);
                 me.getViewModel().set("weekThresholdData",responseData.data);
+                me.renderCountiesMap();
             },
             failure: function(response, opts) {
                 me.getView().unmask();
@@ -136,7 +137,13 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMapController', {
         });
     },
     renderCountiesMap:function(){
-        var R = Raphael("counties-map-container", 600, 700),
+        var me = this;
+
+        if(me.countiesRaphaelMap){
+            me.countiesRaphaelMap.clear();
+        }
+
+        me.countiesRaphaelMap = Raphael("counties-map-container", 600, 700),
             attr = {
                 "fill": "#cccccc",
                 "stroke": "#fff",
@@ -148,9 +155,39 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMapController', {
         var kenyaCounties = Idsr.util.CountiesPaths.kenyaCounties;
 
         var kenyaMap = {};
+
+        var weekThresholdData = me.getViewModel().get("weekThresholdData");
+
         for (var county in kenyaCounties) {
+            //Check if data loaded
+            if(weekThresholdData){
+                var countyResults = Ext.Array.filter(weekThresholdData,function (currentResData, currentIndex) {
+                    return currentResData.county_map_code == county;
+                });
+
+
+                var highestResult;
+
+                Ext.Array.each(countyResults,function (resultItem,index) {
+                    if(index == 0){
+                        highestResult = resultItem;
+
+                    }else{
+                        if(resultItem.inference_id > highestResult.inference_id){
+                            highestResult = resultItem
+                        }
+                    }
+
+                });
+
+                if(highestResult){
+                    attr.fill = highestResult.alert_color_codes;
+                }
+
+            }
+
             // Draw a path, then apply attributes to it.
-            kenyaMap[county] = R.path(kenyaCounties[county]).attr(attr);
+            kenyaMap[county] = me.countiesRaphaelMap.path(kenyaCounties[county]).attr(attr);
             // Name the internal Raphael id after the countiesPaths property name.
             kenyaMap[county].id = county;
             // Name the element id after the countiesPaths property name.
@@ -158,6 +195,7 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMapController', {
         }
     },
     subCountiesRaphaelMap:null,
+    countiesRaphaelMap:null,
     onCountiesMapClick:function(ev){
         var me = this;
         var origEl = ev.target || ev.srcElement;
@@ -187,6 +225,7 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMapController', {
         var subCounties = Idsr.util.SubCountiesPaths.kenyaCountySubCounties[selectedCounty];
 
         var countyMap = {};
+
         for (var subCounty in subCounties) {
             // Draw a path, then apply attributes to it.
             countyMap[subCounty] = me.subCountiesRaphaelMap.path(subCounties[subCounty]).attr(attr);
