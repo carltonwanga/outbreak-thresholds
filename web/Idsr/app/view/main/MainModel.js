@@ -12,17 +12,16 @@ Ext.define('Idsr.view.main.MainModel', {
     ],
 
     formulas: {
+        userFullNames:function(get){
+            var user = get("userDetails");
+            return user.first_name+" "+user.last_name;
+        }
 
     },
 
     data: {
         currentView: null,
-        userDetails:{
-            user:{
-                name:"Guest User"
-            },
-            role_name:"Guest"
-        }
+        userDetails:null
     },
     stores:{
 

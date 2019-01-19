@@ -184,9 +184,23 @@ Ext.define('Idsr.view.users.Users', {
                                         },
                                         {
                                             xtype: 'displayfield',
-                                            fieldLabel: 'User Type',
+                                            fieldLabel: 'National User',
                                             bind: {
-                                                value: '{userType}'
+                                                value: '{record.isNationalUser}'
+                                            }
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            fieldLabel: 'County',
+                                            bind: {
+                                                value: '{record.countyName}'
+                                            }
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            fieldLabel: 'Sub-County',
+                                            bind: {
+                                                value: '{record.subCountyName}'
                                             }
                                         }
                                     ]
@@ -268,6 +282,106 @@ Ext.define('Idsr.view.users.Users', {
                             fieldLabel: 'Identification Number',
                             name: 'identificationNumber',
                             allowBlank: false
+                        },
+                        {
+                            xtype: 'checkbox',
+                            boxLabel: 'National User',
+                            name:'isNationalUser',
+                            bind:{
+                                value: '{nationalUserCheckSelected}'
+                            }
+
+                        },
+                        {
+                            xtype: 'container',
+                            bind:{
+                                hidden: '{nationalUserCheckSelected}'
+                            },
+                            items:[
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: {
+                                        type: 'hbox',
+                                        align: 'stretch'
+                                    },
+                                    flex:1,
+                                    items:[
+                                        {
+                                            xtype: "combobox",
+                                            fieldLabel: 'County',
+                                            store: 'countystore',
+                                            width: 400,
+                                            name:'county',
+                                            pickerId:'usrRegCountyCombo',
+                                            valueField: 'dhis2_code',
+                                            reference:'countyCombo',
+                                            displayField: 'name',
+                                            listConfig: {
+                                                loadingText: 'Searching...',
+                                                emptyText: 'No counties found'
+                                            },
+                                            listeners:{
+                                                select: 'onCountySelect'
+                                            },
+                                            pageSize: 20
+
+                                        },
+                                        {
+                                            xtype: 'button',
+                                            iconCls: 'fa fa-times',
+                                            ui:'soft-red',
+                                            margin: '0 4 0 0',
+                                            tooltip: 'Reset County',
+                                            listeners: {
+                                                click: 'onCountyFilterReset'
+                                            }
+                                        }
+                                    ]
+
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: {
+                                        type: 'hbox',
+                                        align: 'stretch'
+                                    },
+                                    flex:1,
+                                    items:[
+                                        {
+                                            xtype: "combobox",
+                                            width: 400,
+                                            fieldLabel: 'Sub-County',
+                                            pickerId:'usrRegSubCountyCombo',
+                                            valueField: 'dhis2_code',
+                                            store: 'subcountystore',
+                                            reference:'subCountyCombo',
+                                            displayField: 'name',
+                                            name:'subcounty',
+                                            listConfig: {
+                                                loadingText: 'Searching...',
+                                                emptyText: 'No sub-counties found'
+                                            },
+                                            allowBlank: false,
+                                            bind:{
+                                               disabled: '{nationalUserCheckSelected}'
+                                            },
+                                            pageSize: 20
+
+                                        },
+                                        {
+                                            xtype: 'button',
+                                            iconCls: 'fa fa-times',
+                                            ui:'soft-red',
+                                            margin: '0 4 0 0',
+                                            tooltip: 'Reset Sub-County',
+                                            listeners: {
+                                                click: 'onSubCountyFilterReset'
+                                            }
+                                        }
+                                    ]
+
+                                }
+                            ]
                         },
                         {
                             xtype: 'container',

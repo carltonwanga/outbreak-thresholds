@@ -28,6 +28,8 @@ Ext.define('Idsr.view.users.UsersController', {
             record = form.getRecord(),
             store = this.getStore('users');
 
+        console.log(record);
+
         // Valid
         if (form.isValid()) {
 
@@ -235,6 +237,42 @@ Ext.define('Idsr.view.users.UsersController', {
 
         });
 
+    },
+    onCountySelect:function(combo){
+        var selectedCounty = combo.getValue();
+        var subountyCombo = this.lookupReference("subCountyCombo");
+
+        subountyCombo.reset();
+        subountyCombo.getStore().removeAll();
+
+        var filters = {};
+
+        // Reset paging parameters to first page
+        filters["start"] = 0;
+        filters["limit"] = 25;
+        filters["county"] = selectedCounty;
+
+        subountyCombo.getStore().load({
+            params: filters
+        });
+
+
+    },
+    onCountyFilterReset:function(){
+        this.lookupReference("countyCombo").reset();
+        var filters = {};
+
+        // Reset paging parameters to first page
+        filters["start"] = 0;
+        filters["limit"] = 25;
+        this.lookupReference("subCountyCombo").reset();
+
+        this.lookupReference("subCountyCombo").getStore('historicRecords').load({
+            params: filters
+        });
+    },
+    onSubCountyFilterReset:function(){
+        this.lookupReference("subCountyCombo").reset();
     },
 
 

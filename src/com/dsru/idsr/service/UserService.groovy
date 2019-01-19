@@ -38,16 +38,22 @@ class UserService {
 
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
         Sql sql = new Sql(dataSource);
-        def similarUser = sql.firstRow("SELECT *FROM users WHERE email = ?",email);
+        def similarUser = sql.firstRow("SELECT * FROM users WHERE email = ?",email);
 
         if(similarUser){
             res.setStatus(0);
             res.setMessage("User with similar email already exist");
             return res;
         }else {
+            if(user.get("isNationalUser")=="on"){
+                user.put("nationalUser",true);
+            }else{
+                user.put("nationalUser",false);
+            }
+
             def savedUser = sql.executeInsert("""
-                INSERT INTO users(first_name, middle_name, last_name, email, phone_number, identification_type, identification_number, is_active, company_name) 
-                           VALUES(?.firstName,?.middleName,?.lastName,?.email,?.phoneNumber,?.identificationType,?.identificationNumber,FALSE,?.companyName)
+                INSERT INTO users(first_name, middle_name, last_name, email, phone_number, identification_type, identification_number, is_active, is_national_user, sub_county) 
+                           VALUES(?.firstName,?.middleName,?.lastName,?.email,?.phoneNumber,?.identificationType,?.identificationNumber,FALSE,?.nationalUser,?.subcounty)
             """,user);
 
             if (savedUser) {
@@ -64,6 +70,7 @@ class UserService {
                     sql.executeUpdate("UPDATE users SET is_active = TRUE WHERE id = ?",savedUserId);
                     sendPasswordResetEmail(savedUserId);
                 }
+
                 res = new CommonResponse(1, "Success. A confirmation email has been sent to " + email + ". Kindly follow the link in your email to complete the registration process");
 
             } else {
@@ -187,7 +194,6 @@ class UserService {
         users.identification_type,
         users.identification_number,
         users.is_active,
-        users.company_name,
         admin_roles.name role_name,
         admin_roles.id role_id
         FROM
@@ -211,7 +217,6 @@ class UserService {
         def start = params.start?.toInteger();
         def limit = params.limit?.toInteger();
         def paramQuery  = params.query;
-        def fetchAdminOnly = params.admin?.toBoolean();
 
         sqlParams.start =  start;
         sqlParams.limit = limit;
@@ -219,15 +224,8 @@ class UserService {
 
         def adminFilterQuery = "";
         def queryFilterQuery = "";
-        def queryFilterPrefix = "";
+        def queryFilterPrefix = " WHERE "
 
-        if(fetchAdminOnly){
-            adminFilterQuery  = " WHERE EXISTS (SELECT * FROM admin_users WHERE user_id = users.id AND is_active = TRUE) ";
-            queryFilterPrefix = " AND "
-
-        }else{
-            queryFilterPrefix = " WHERE "
-        }
 
 
         if(paramQuery!=null){
@@ -247,7 +245,15 @@ class UserService {
                 users.phone_number "phoneNumber",
                 users.identification_type "identificationType",
                 users.identification_number "identificationNumber",
-                users.is_active "isActive"
+                users.is_active "isActive", 
+                users.is_national_user "isNationalUser",
+                CASE
+                    WHEN users.sub_county IS NULL THEN ''
+                    ELSE (SELECT sub_county.name FROM sub_county WHERE sub_county.dhis2_code = users.sub_county) END AS "subCountyName",
+                CASE
+                    WHEN users.sub_county IS NULL THEN ''
+                    ELSE (SELECT county."name" FROM sub_county,county WHERE sub_county.dhis2_code = users.sub_county AND sub_county.county_code = county.dhis2_code) END AS "countyName",
+                users.sub_county "subCounty"
                 FROM
                 users """+queryFilter+" LIMIT ?.limit OFFSET ?.start";
 
@@ -412,6 +418,12 @@ class UserService {
 
         def userDetails = new JsonSlurper().parseText(userDetailsJsonStr);
 
+        if(userDetails.get("isNationalUser")=="on"){
+            userDetails.put("nationalUser",true);
+        }else{
+            userDetails.put("nationalUser",false);
+        }
+
         def firstName = userDetails.firstName;
         def middleName = userDetails.middleName;
         def lastName = userDetails.lastName;
@@ -419,10 +431,12 @@ class UserService {
         def phoneNumber = userDetails.phoneNumber;
         def identificationType = userDetails.identificationType;
         def identificationNumber = userDetails.identificationNumber;
+        def isNationalUser = userDetails.nationalUser;
+        def subCounty = userDetails.subcounty;
 
-        Map queryParams = [firstName:firstName, middleName:middleName, lastName:lastName, email:email, phoneNumber:phoneNumber, identificationType:identificationType, identificationNumber:identificationNumber, userId: userId];
+        Map queryParams = [firstName:firstName, middleName:middleName, lastName:lastName, email:email, phoneNumber:phoneNumber, identificationType:identificationType, identificationNumber:identificationNumber, userId: userId,isNationalUser:isNationalUser,subCounty:subCounty];
 
-        int update = sql.executeUpdate("UPDATE users SET first_name = ?.firstName, middle_name = ?.middleName, last_name = ?.lastName, phone_number = ?.phoneNumber, identification_type = ?.identificationType, identification_number = ?.identificationNumber WHERE id = ?.userId", queryParams);
+        int update = sql.executeUpdate("UPDATE users SET first_name = ?.firstName, middle_name = ?.middleName, last_name = ?.lastName, phone_number = ?.phoneNumber, identification_type = ?.identificationType, identification_number = ?.identificationNumber,is_national_user = ?.isNationalUser,sub_county = ?.subCounty WHERE id = ?.userId", queryParams);
         sql.close();
         if(update > 0){
             res.success = true;
@@ -437,7 +451,7 @@ class UserService {
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
         Sql sql = new Sql(dataSource);
         boolean status = false;
-        def insertUser = sql.executeInsert("INSERT INTO users (first_name, middle_name, last_name, email, phone_number, identification_type, identification_number, company_name) VALUES(?.firstName, ?.middleName, ?.lastName, ?.email, ?.phoneNumber, ?.identificationType, ?.identificationNumber, ?.companyName)",usersEntity);
+        def insertUser = sql.executeInsert("INSERT INTO users (first_name, middle_name, last_name, email, phone_number, identification_type, identification_number) VALUES(?.firstName, ?.middleName, ?.lastName, ?.email, ?.phoneNumber, ?.identificationType, ?.identificationNumber)",usersEntity);
         sql.close();
         if(insertUser){
             status = true;

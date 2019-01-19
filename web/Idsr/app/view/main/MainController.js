@@ -178,7 +178,43 @@ Ext.define('Idsr.view.main.MainController', {
         });
     },
     onUpdateNavigationStore:function() {
-       var menu = this.lookupReference("navigationTreeList");
+        var me = this;
+        var currentUserId = this.getViewModel().get('userDetails').id;
+        var menuUrl = Idsr.util.Constants.controllersApiFromIndex+"/users/menus/"+currentUserId;
+        me.getView().mask('Loading... Please wait...');
+        Ext.Ajax.request({
+            url: menuUrl,
+            method:"GET",
+            success: function(response, opts) {
+                me.getView().unmask();
+                var responseData = Ext.JSON.decode(response.responseText);
+                var status = responseData.status;
+                if(status == 1){
+                    var menuRoot = responseData.data;
+                    var theNavigationMenu = me.lookupReference("navigationTreeList");
+                    var adminStore = Ext.create('Idsr.store.NavigationTree');
+
+                    adminStore.setRoot(menuRoot);
+                    theNavigationMenu.setConfig('store',adminStore);
+                    var initialRoute = menuRoot['children'][0]['routeId'];
+                    if (!window.location.hash) {
+                        me.redirectTo(initialRoute);
+                    }else{
+
+                        var currentView = window.location.hash.substring(1);
+                        me.setCurrentView(currentView);
+                    }
+                }else{
+
+                }
+
+            },
+
+            failure: function(response, opts) {
+                me.getView().unmask();
+
+            }
+        });
 
     }
 });

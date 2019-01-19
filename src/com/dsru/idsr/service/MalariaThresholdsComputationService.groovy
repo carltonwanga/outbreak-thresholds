@@ -282,7 +282,11 @@ class MalariaThresholdsComputationService {
                     }
 
                     Double reportingRate = reportingRateMap?.value;
-                    Integer extrapolatedCases = (Integer)Math.round((casesReported * 100/reportingRate));
+                    Integer extrapolatedCases = 0;
+                    if(reportingRate){
+                        extrapolatedCases = (Integer)Math.round((casesReported * 100/reportingRate));
+                    }
+
 
 
                     long inference;

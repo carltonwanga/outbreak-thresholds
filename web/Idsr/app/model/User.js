@@ -59,11 +59,12 @@ Ext.define('Idsr.model.User', {
             name: 'isActive'
         },
         {
-            name: 'companyName'
+            type: 'boolean',
+            name: 'isNationalUser'
         },
         {
-            type: 'boolean',
-            name: 'isAdmin'
+            type: 'string',
+            name: 'subCounty'
         }
     ]
 });

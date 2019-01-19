@@ -77,6 +77,9 @@ Ext.define('Idsr.view.users.UsersModel', {
         idtype: {
             type: 'identificationType'
         }
+    },
+    data:{
+        nationalUserCheckSelected:false
     }
 
 });

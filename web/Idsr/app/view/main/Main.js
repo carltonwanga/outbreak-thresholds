@@ -67,7 +67,7 @@ Ext.define('Idsr.view.main.Main', {
                 {
                     xtype: 'tbtext',
                     bind:{
-                        text: '{userDetails.user.name}'
+                        text: '{userFullNames}'
                     },
                     cls: 'top-user-name'
                 },

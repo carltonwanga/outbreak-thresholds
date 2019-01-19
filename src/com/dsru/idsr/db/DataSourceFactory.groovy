@@ -17,9 +17,10 @@ class DataSourceFactory {
         return dataSource;
     }
 
-    /*public static DriverManagerDataSource getTestApplication(){
+
+    public static DriverManagerDataSource getTestApplication(){
          DriverManagerDataSource dataSource = new DriverManagerDataSource("jdbc:postgresql://localhost:5432/idsr","postgres","postgres");
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        return dataSource;
-    }*/
+         dataSource.setDriverClassName("org.postgresql.Driver");
+         return dataSource;
+    }
 }
