@@ -8,6 +8,7 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         'Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputationResultsModel',
 		'Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputationResultsController'
     ],
+
     xtype: 'malariathresholdcomputationresults',
 
     viewModel: {
@@ -407,7 +408,19 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                 displayInfo: true,
                 displayText: 'Displaying record {0} - {1} of {2}',
                 emptyText: 'No records to display'
-            })
+            }),
+            tbar: {
+                items: [
+                    {
+                        xtype: 'button',
+                        text:'View weather details',
+                        iconCls: 'fa fa-cloud',
+                        listeners: {
+                            click: 'onShowWeatherPanel'
+                        }
+                    }
+                ]
+            }
 
         },
         {
@@ -639,6 +652,93 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                                 value: '{record.is_active}'
                             }
                         }
+
+                    ]
+                },
+                {
+                    xtype: 'panel',
+                    reference: 'weatherPanel',
+                    title:'Weather Details',
+                    scrollable: true,
+                    items:[
+                        {
+                            xtype: 'fieldset',
+                            title:'Summary',
+                            items:[
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Status',
+                                    bind:{
+                                        value: '{currentWeekWeather.summary}'
+                                    }
+                                },
+                                {
+                                    xtype: 'container',
+                                    bind: {
+                                        html:'<img src="{iconurl}">'
+                                    }
+                                }
+
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title:'Rainfall',
+                            items:[
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Intensity',
+                                    bind:{
+                                        value: '{currentWeekWeather.precipIntensity}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Max',
+                                    bind:{
+                                        value: '{currentWeekWeather.precipIntensityMax}'
+                                    }
+                                }
+
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title:'Temperature',
+                            items:[
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'High',
+                                    bind:{
+                                        value: '{currentWeekWeather.temperatureHigh}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Max',
+                                    bind:{
+                                        value: '{currentWeekWeather.temperatureLow}'
+                                    }
+                                }
+
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title:'Humidity',
+                            items:[
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Humidity',
+                                    bind:{
+                                        value: '{currentWeekWeather.humidity}'
+                                    }
+                                }
+
+                            ]
+                        }
+
+
 
                     ]
                 }

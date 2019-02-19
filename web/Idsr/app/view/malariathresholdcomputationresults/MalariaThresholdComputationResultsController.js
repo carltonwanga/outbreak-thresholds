@@ -61,21 +61,24 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
     },
     onCountySelect:function(combo){
         var selectedCounty = combo.getValue();
-        var subountyCombo = this.lookupReference("subCountyCombo");
 
-        subountyCombo.reset();
-        subountyCombo.getStore().removeAll();
+        var subCountiesUrl = Idsr.util.Constants.controllersApiFromIndex+'/subcounties?county='+selectedCounty;
 
-        var filters = {};
+        var newSubCountiesProxy = {
+            type: 'rest',
+            pageSize: 25,
+            url:subCountiesUrl ,
+            reader: {
+                type: 'json',
+                rootProperty:'data'
+            }
+        }
 
-        // Reset paging parameters to first page
-        filters["start"] = 0;
-        filters["limit"] = 25;
-        filters["county"] = selectedCounty;
+        var subCountiesField = this.lookupReference("subCountyCombo");
+        subCountiesField.reset();
 
-        subountyCombo.getStore().load({
-            params: filters
-        });
+        subCountiesField.store.setConfig('proxy',newSubCountiesProxy);
+        subCountiesField.store.reload();
 
 
     },
@@ -166,6 +169,53 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
             }
         });
         this.lookupReference('yearFilterCombo').setStore(yearsStore);
+
+    },
+    getDateOfISOWeek:function(w, y){
+        var simple = new Date(y, 0, 1 + (w - 1) * 7);
+        var dow = simple.getDay();
+        var ISOweekStart = simple;
+        if (dow <= 4)
+            ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+        else
+            ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+        var ts = Math.round(ISOweekStart.getTime() / 1000);
+        return ts;
+
+    },
+    onShowWeatherPanel:function () {
+        this.sideDisplayShowView('weatherPanel');
+        this.fetchWeatherData();
+    },
+    fetchWeatherData:function(){
+        var me = this;
+        var currentRecord = me.getViewModel().get("record");
+        var week = currentRecord.get("week");
+        var year = currentRecord.get("year");
+        var timeToCheck = this.getDateOfISOWeek(week,year);
+
+        var subCounty = currentRecord.get("sub_county");
+
+        me.getView().mask('Loading... Please wait...');
+
+        Ext.Ajax.request({
+            url:Idsr.util.Constants.controllersApiFromIndex+'/weatherapi/check',
+            method:"GET",
+            params: {
+                subcounty: subCounty,
+                time:timeToCheck
+            },
+            success: function(response, opts) {
+                me.getView().unmask();
+                var responseData = Ext.JSON.decode(response.responseText);
+                me.getViewModel().set("currentWeekWeather",responseData.data.daily.data[0]);
+            },
+            failure: function(response, opts) {
+                me.getView().unmask();
+                Ext.Msg.alert("Error","Could not fetch weather details");
+            }
+        });
+
 
     }
 });

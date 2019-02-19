@@ -19,20 +19,25 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
     ],
     onCountySelect:function(combo){
         var selectedCounty = combo.getValue();
-        var subCountyCombo = this.lookupReference("subCountyCombo");
 
-        subCountyCombo.reset();
+        var subCountiesUrl = Idsr.util.Constants.controllersApiFromIndex+'/subcounties?county='+selectedCounty;
 
-        var filters = {};
+        var newSubCountiesProxy = {
+            type: 'rest',
+            pageSize: 25,
+            url:subCountiesUrl ,
+            reader: {
+                type: 'json',
+                rootProperty:'data'
+            }
+        }
 
-        // Reset paging parameters to first page
-        filters["start"] = 0;
-        filters["limit"] = 25;
-        filters["county"] = selectedCounty;
+        var subCountiesField = this.lookupReference("subCountyCombo");
+        subCountiesField.reset();
 
-        subCountyCombo.getStore().load({
-            params: filters
-        });
+
+        subCountiesField.store.setConfig('proxy',newSubCountiesProxy);
+        subCountiesField.store.reload();
 
     },
     loadYearStore:function(){

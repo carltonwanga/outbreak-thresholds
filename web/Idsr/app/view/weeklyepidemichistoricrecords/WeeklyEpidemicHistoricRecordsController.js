@@ -124,16 +124,24 @@ Ext.define('Idsr.view.weeklyepidemichistoricrecords.WeeklyEpidemicHistoricRecord
     onCountySelect:function(combo){
         var selectedCounty = combo.getValue();
 
-        var filters = {};
+        var subCountiesUrl = Idsr.util.Constants.controllersApiFromIndex+'/subcounties?county='+selectedCounty;
 
-        // Reset paging parameters to first page
-        filters["start"] = 0;
-        filters["limit"] = 25;
-        filters["county"] = selectedCounty;
+        var newSubCountiesProxy = {
+            type: 'rest',
+            pageSize: 25,
+            url:subCountiesUrl ,
+            reader: {
+                type: 'json',
+                rootProperty:'data'
+            }
+        }
 
-        this.lookupReference("subCountyCombo").getStore().load({
-            params: filters
-        });
+        var subCountiesField = this.lookupReference("subCountyCombo");
+        subCountiesField.reset();
+
+
+        subCountiesField.store.setConfig('proxy',newSubCountiesProxy);
+        subCountiesField.store.reload();
 
 
     },
