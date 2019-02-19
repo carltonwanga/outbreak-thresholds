@@ -215,7 +215,36 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTrackerController'
         } else {
             chart.preview();
         }
+    },
+    onToggleOtherStatsChartMarkers: function () {
+        var chart = this.lookupReference('statisticalComparisonChart'),
+            seriesList = chart.getSeries(),
+            ln = seriesList.length,
+            i = 0,
+            series;
+
+        for (; i < ln; i++) {
+            series = seriesList[i];
+            series.setShowMarkers(!series.getShowMarkers());
+        }
+
+        chart.redraw();
+    },
+    onPreviewOtherStatsChart: function () {
+        var chart = this.lookupReference('statisticalComparisonChart');
+        chart.preview();
+    },
+    onDownloadOtherStatsChart: function() {
+        var chart = this.lookupReference('statisticalComparisonChart');
+        if (Ext.os.is.Desktop) {
+            chart.download({
+                filename: 'Thresholds Tracking Chart'
+            });
+        } else {
+            chart.preview();
+        }
     }
+
 
 
 

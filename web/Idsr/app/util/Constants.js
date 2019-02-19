@@ -2,7 +2,7 @@
  * Created by PAVILION 15 on 10/8/2018.
  */
 Ext.define('Idsr.util.Constants', {
-    /*statics: {
+    statics: {
         rootUrl: "/idsr/admin/",
         controllersApiFromIndex: "../app",
         apiUrl: "",
@@ -11,9 +11,9 @@ Ext.define('Idsr.util.Constants', {
         historicDataStartYear:2012,
         thresholdDataStartYear:2018,
         historicDataEndYear:2015
-    }*/
+    }
 
-    statics: {
+    /*statics: {
         rootUrl: "/idsr/Idsr/",
         controllersApiFromIndex: "../app",
         apiUrl: "",
@@ -22,5 +22,5 @@ Ext.define('Idsr.util.Constants', {
         historicDataStartYear:2012,
         thresholdDataStartYear:2018,
         historicDataEndYear:2015
-    }
+    }*/
 });

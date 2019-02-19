@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3 form-box">
                     <div class="form-bottom">
-                        <form role="form" action="<c:url value="/payments/" />">
+                        <form role="form" action="<c:url value="/admin" />">
                             <button type="submit" class="btn">Proceed to Login</button>
                         </form>
                     </div>

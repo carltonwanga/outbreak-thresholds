@@ -70,7 +70,7 @@ Ext.define('Idsr.view.malariathresholdmap.MalariaThresholdMap', {
                         displayField: "name",
                         name:'week',
                         allowBlank: false,
-                        valueField: "week",
+                        valueField: "week"
 
                     },
                     {

@@ -3,6 +3,7 @@
  * calls Ext.application(). This is the ideal place to handle application launch and
  * initialization details.
  */
+
 Ext.define('Idsr.Application', {
     extend: 'Ext.app.Application',
     requires: [
@@ -28,7 +29,14 @@ Ext.define('Idsr.Application', {
         'Idsr.view.malariavisualbuilder.MalariaVisualBuilder',
         'Idsr.view.weeklyepidemicdataimportresults.WeeklyEpidemicDataImportResults',
         'Idsr.view.malariavisualbuilder.MalariaVisualBuilder',
-        'Idsr.view.weeklyepidemichistoricrecords.WeeklyEpidemicHistoricRecords'
+        'Idsr.view.weeklyepidemichistoricrecords.WeeklyEpidemicHistoricRecords',
+        'Idsr.view.emailtemplate.EmailTemplate',
+        'Idsr.view.login.Login',
+        'Idsr.view.users.Users',
+        'Idsr.view.roles.Roles',
+        'Idsr.view.usereventlogs.UserEventLogs',
+        'Idsr.view.userloginlogs.UserLoginLogs'
+
     ],
     
     launch: function () {

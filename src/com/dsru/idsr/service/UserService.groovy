@@ -15,6 +15,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
+import javax.servlet.http.HttpServletRequest
+
 @Service
 class UserService {
 
@@ -30,7 +32,7 @@ class UserService {
 
     }
 
-    public CommonResponse addUser(String userStr, int registrationType){
+    public CommonResponse addUser(String userStr, int registrationType,HttpServletRequest servletRequest){
         Map user = new JsonSlurper().parseText(userStr);
 
         CommonResponse res = new CommonResponse();
@@ -68,7 +70,7 @@ class UserService {
                     sendAccountActivationLink(savedUserId);
                 }else{
                     sql.executeUpdate("UPDATE users SET is_active = TRUE WHERE id = ?",savedUserId);
-                    sendPasswordResetEmail(savedUserId);
+                    sendPasswordResetEmail(savedUserId,servletRequest);
                 }
 
                 res = new CommonResponse(1, "Success. A confirmation email has been sent to " + email + ". Kindly follow the link in your email to complete the registration process");
@@ -105,13 +107,17 @@ class UserService {
         }
     }
 
-    public void sendPasswordResetEmail(long userId){
+    public void sendPasswordResetEmail(long userId,HttpServletRequest servletRequest){
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
         Sql sql = new Sql(dataSource);
         String tokenStr = UUID.randomUUID().toString();
         passwordManagementService.insertPasswordToken(userId,tokenStr);
 
-        String passwordResetUrl = Constants.BASE_APP_URL+"password/change/"+tokenStr;
+
+        String appUrl = servletRequest.getScheme()+"://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath()+servletRequest.getServletPath()+"/password/change/";
+
+
+        String passwordResetUrl = appUrl+tokenStr;
         def passwordResetEmailMap = sql.firstRow("SELECT  * FROM  email_template WHERE id = 1");
         String userEmail = getEmailFromUserId(userId);
         sql.close();

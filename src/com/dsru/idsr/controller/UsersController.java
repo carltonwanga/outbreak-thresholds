@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
@@ -34,8 +36,8 @@ public class UsersController {
     }
 
     @RequestMapping(value = "/",method = RequestMethod.POST)
-    public CommonResponse addUser(@RequestBody String userStr){
-        return userService.addUser(userStr,1);
+    public CommonResponse addUser(@RequestBody String userStr,HttpServletRequest servletRequest){
+        return userService.addUser(userStr,1,servletRequest);
     }
 
     @RequestMapping(value = "/{userId}",method = RequestMethod.PUT)
@@ -85,7 +87,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "/registeruser",method = RequestMethod.POST)
-    public CommonResponse registerUser(@RequestBody String userStr){
+    public CommonResponse registerUser(@RequestBody String userStr,HttpServletRequest servletRequest){
         Map user = userService.getUserDetailsMap(userStr);
         String password = user.get("password").toString();
         String confirmPassword = user.get("confirmPassword").toString();
@@ -93,7 +95,7 @@ public class UsersController {
         CommonResponse res = new CommonResponse();
         if(password.equals(confirmPassword)){
             if(passwordManagementService.isPasswordStrong(password)){
-                return userService.addUser(userStr,2);
+                return userService.addUser(userStr,2,servletRequest);
             }else{
                 res.setStatus(0);
                 res.setSuccess(true);

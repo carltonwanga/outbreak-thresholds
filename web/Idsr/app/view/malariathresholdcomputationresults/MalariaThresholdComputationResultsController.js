@@ -171,6 +171,13 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         this.lookupReference('yearFilterCombo').setStore(yearsStore);
 
     },
+    addDateToTimeStamp: function(timeStampToCheck,index){
+        var startDate = new Date(timeStampToCheck*1000);
+        var currentDate = new Date(startDate.setDate(startDate.getDate() + index));
+
+        return Math.round(currentDate.getTime() / 100)
+
+    },
     getDateOfISOWeek:function(w, y){
         var simple = new Date(y, 0, 1 + (w - 1) * 7);
         var dow = simple.getDay();
@@ -180,6 +187,8 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         else
             ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
         var ts = Math.round(ISOweekStart.getTime() / 1000);
+
+        this.addDateToTimeStamp(ts,2);
         return ts;
 
     },
@@ -208,7 +217,10 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
             success: function(response, opts) {
                 me.getView().unmask();
                 var responseData = Ext.JSON.decode(response.responseText);
-                me.getViewModel().set("currentWeekWeather",responseData.data.daily.data[0]);
+                if(responseData!=null){
+                    me.getViewModel().set("currentWeekWeather",responseData.data.daily.data[0]);
+
+                }
             },
             failure: function(response, opts) {
                 me.getView().unmask();
@@ -217,5 +229,8 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         });
 
 
+    },
+    onWeatherTabChange:function(tabPanel, newTab){
+        var activeTabIndex = tabPanel.items.indexOf(newTab);
     }
 });

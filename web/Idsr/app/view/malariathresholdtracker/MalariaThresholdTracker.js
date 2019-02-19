@@ -1,6 +1,7 @@
 /**
  * Created by PAVILION 15 on 11/1/2018.
  */
+
 Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
     extend: 'Ext.panel.Panel',
 
@@ -685,6 +686,262 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                     ]
                 },
                 {
+                    title:'Other Comparisons',
+                    items:[
+                        {
+                            xtype: 'cartesian',
+                            reference: 'statisticalComparisonChart',
+                            width: '100%',
+                            height: 500,
+                            interactions: {
+                                type: 'panzoom',
+                                zoomOnPanGesture: true
+                            },
+                            animation: {
+                                duration: 200
+                            },
+                            bind:{
+                                store: '{yearThresholdResults}'
+                            },
+                            insetPadding: 40,
+                            innerPadding: {
+                                left: 40,
+                                right: 40
+                            },
+                            legend: {
+                                docked: 'bottom'
+                            },
+                            axes: [{
+                                type: 'numeric',
+                                position: 'left',
+                                grid: true,
+                                minimum: 0,
+                                fields:['cases_reported','alert_threshold','action_threshold','mean','c_sum','c_sum_1_96_sd','extrapolated_cases'],
+                                title: 'Malaria Cases'
+                            },{
+                                type: 'numeric',
+                                position: 'bottom',
+                                grid: true,
+                                minimum: 1,
+                                increment: 1,
+                                maximum: 52,
+                                title: 'Week',
+                                label: {
+                                    rotate: {
+                                        degrees: -45
+                                    }
+                                }
+                            }],
+                            series: [
+                                {
+                                    type: 'line',
+                                    title:'Cases Reported',
+                                    xField: 'week',
+                                    yField: 'cases_reported',
+                                    style: {
+                                        lineWidth: 2
+                                    },
+                                    marker: {
+                                        radius: 4,
+                                        lineWidth: 2
+                                    },
+                                    highlight: {
+                                        fillStyle: '#000',
+                                        radius: 5,
+                                        lineWidth: 2,
+                                        strokeStyle: '#fff'
+                                    },
+                                    tooltip: {
+                                        trackMouse: true,
+                                        showDelay: 0,
+                                        dismissDelay: 0,
+                                        hideDelay: 0,
+                                        renderer: 'onThresholdSeriesTooltipRender'
+                                    }
+                                },
+                                {
+                                    type: 'line',
+                                    title:'Third Quartile',
+                                    xField: 'week',
+                                    yField: 'alert_threshold',
+                                    hidden:true,
+                                    style: {
+                                        lineWidth: 2
+                                    },
+                                    marker: {
+                                        type: 'square',
+                                        fx: {
+                                            duration: 200,
+                                            easing: 'backOut'
+                                        }
+                                    },
+                                    highlight: {
+                                        fillStyle: '#000',
+                                        radius: 5,
+                                        lineWidth: 2,
+                                        strokeStyle: '#fff'
+                                    },
+                                    tooltip: {
+                                        trackMouse: true,
+                                        showDelay: 0,
+                                        dismissDelay: 0,
+                                        hideDelay: 0,
+                                        renderer: 'onThresholdSeriesTooltipRender'
+                                    }
+                                },
+                                {
+                                    type: 'line',
+                                    title:'Mean+2 SD',
+                                    hidden:true,
+                                    xField: 'week',
+                                    yField: 'action_threshold',
+                                    style: {
+                                        lineWidth: 2
+                                    },
+                                    marker: {
+                                        type: 'cross',
+                                        fx: {
+                                            duration: 200,
+                                            easing: 'backOut'
+                                        }
+                                    },
+                                    highlight: {
+                                        fillStyle: '#000',
+                                        radius: 5,
+                                        lineWidth: 2,
+                                        strokeStyle: '#fff'
+                                    },
+                                    tooltip: {
+                                        trackMouse: true,
+                                        showDelay: 0,
+                                        dismissDelay: 0,
+                                        hideDelay: 0,
+                                        renderer: 'onThresholdSeriesTooltipRender'
+                                    }
+                                },
+                                {
+                                    type: 'line',
+                                    title:'C-SUM',
+                                    hidden:true,
+                                    xField: 'week',
+                                    yField: 'c_sum',
+                                    style: {
+                                        lineWidth: 2
+                                    },
+                                    marker: {
+                                        type: 'cross',
+                                        fx: {
+                                            duration: 200,
+                                            easing: 'backOut'
+                                        }
+                                    },
+                                    highlight: {
+                                        fillStyle: '#000',
+                                        radius: 5,
+                                        lineWidth: 2,
+                                        strokeStyle: '#fff'
+                                    },
+                                    tooltip: {
+                                        trackMouse: true,
+                                        showDelay: 0,
+                                        dismissDelay: 0,
+                                        hideDelay: 0,
+                                        renderer: 'onThresholdSeriesTooltipRender'
+                                    }
+                                },
+                                {
+                                    type: 'line',
+                                    title:'C-SUM + 1.96 SD',
+                                    hidden:true,
+                                    xField: 'week',
+                                    yField: 'c_sum_1_96_sd',
+                                    style: {
+                                        lineWidth: 2
+                                    },
+                                    marker: {
+                                        type: 'cross',
+                                        fx: {
+                                            duration: 200,
+                                            easing: 'backOut'
+                                        }
+                                    },
+                                    highlight: {
+                                        fillStyle: '#000',
+                                        radius: 5,
+                                        lineWidth: 2,
+                                        strokeStyle: '#fff'
+                                    },
+                                    tooltip: {
+                                        trackMouse: true,
+                                        showDelay: 0,
+                                        dismissDelay: 0,
+                                        hideDelay: 0,
+                                        renderer: 'onThresholdSeriesTooltipRender'
+                                    }
+                                },
+                                {
+                                    type: 'line',
+                                    title:'Extrapolated Case',
+                                    hidden:true,
+                                    xField: 'week',
+                                    yField: 'extrapolated_cases',
+                                    style: {
+                                        lineWidth: 2
+                                    },
+                                    marker: {
+                                        type: 'cross',
+                                        fx: {
+                                            duration: 200,
+                                            easing: 'backOut'
+                                        }
+                                    },
+                                    highlight: {
+                                        fillStyle: '#000',
+                                        radius: 5,
+                                        lineWidth: 2,
+                                        strokeStyle: '#fff'
+                                    },
+                                    tooltip: {
+                                        trackMouse: true,
+                                        showDelay: 0,
+                                        dismissDelay: 0,
+                                        hideDelay: 0,
+                                        renderer: 'onThresholdSeriesTooltipRender'
+                                    }
+                                }
+
+
+                            ]
+
+                        }
+
+                    ],
+                    tbar: ['->',
+                        {
+                            xtype:'button',
+                            ui:'soft-purple',
+                            iconCls: 'fa fa-toggle-on',
+                            text: 'Toggle Markers',
+                            handler: 'onToggleOtherStatsChartMarkers'
+                        },
+                        {
+                            xtype:'button',
+                            ui:'soft-blue',
+                            iconCls: 'fa fa-expand',
+                            text: 'Preview',
+                            handler: 'onPreviewOtherStatsChart'
+                        },
+                        {
+                            xtype:'button',
+                            ui:'soft-green',
+                            iconCls: 'fa fa-download',
+                            text: 'Download',
+                            handler: 'onDownloadOtherStatsChart'
+                        }
+                    ]
+                },
+
+                {
                     title:'Grid View',
                     items:[
                         {
@@ -711,13 +968,13 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                                     xtype: 'gridcolumn',
                                     dataIndex: 'alert_threshold',
                                     flex:1,
-                                    text: 'Alert Threshold'
+                                    text: 'Alert Threshold(3rd Quartile)'
                                 },
                                 {
                                     xtype: 'gridcolumn',
                                     dataIndex: 'action_threshold',
                                     flex:1,
-                                    text: 'Action Threshold'
+                                    text: 'Action Threshold(Mean+2 S.D)'
                                 },
                                 {
                                     xtype: 'gridcolumn',
@@ -733,6 +990,32 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                                     dataIndex: 'deaths',
                                     flex:1,
                                     text: 'Deaths'
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'c_sum',
+                                    flex:1,
+                                    text: 'C-SUM'
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'c_sum_1_96_sd',
+                                    flex:1,
+                                    text: 'C-SUM + 1.96 S.D'
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'reporting_rate',
+                                    flex:1,
+                                    hidden:true,
+                                    text: 'Reporting Rate'
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'extrapolated_cases',
+                                    flex:1,
+                                    hidden:true,
+                                    text: 'Extrapolated Cases'
                                 }
                             ]
 

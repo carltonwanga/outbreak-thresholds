@@ -350,7 +350,7 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                     xtype: 'gridcolumn',
                     dataIndex: 'time_calculated',
                     text: 'Time Calculated',
-                    hidden: true,
+                    hidden: true
                 },
                 {
                     xtype: 'gridcolumn',
@@ -371,19 +371,19 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                     xtype: 'gridcolumn',
                     dataIndex: 'inference_name',
                     text: 'Inference',
-                    hidden: true,
+                    hidden: true
                 },
                 {
                     xtype: 'gridcolumn',
                     dataIndex: 'deaths',
                     text: 'Deaths',
-                    hidden: true,
+                    hidden: true
                 },
                 {
                     xtype: 'gridcolumn',
                     dataIndex: 'lab_positivity',
                     text: 'Positivity Rate',
-                    hidden: true,
+                    hidden: true
                 },
                 {
                     xtype: 'gridcolumn',
@@ -654,93 +654,73 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                         }
 
                     ]
+
                 },
                 {
-                    xtype: 'panel',
+                    xtype: 'tabpanel',
                     reference: 'weatherPanel',
                     title:'Weather Details',
-                    scrollable: true,
                     items:[
                         {
-                            xtype: 'fieldset',
-                            title:'Summary',
-                            items:[
+                            title: 'Monday',
+                            items: [
                                 {
-                                    xtype: 'displayfield',
-                                    fieldLabel: 'Status',
-                                    bind:{
-                                        value: '{currentWeekWeather.summary}'
-                                    }
-                                },
-                                {
-                                    xtype: 'container',
-                                    bind: {
-                                        html:'<img src="{iconurl}">'
-                                    }
+                                    xtype: 'dailyweatherpanel'
                                 }
-
                             ]
                         },
                         {
-                            xtype: 'fieldset',
-                            title:'Rainfall',
-                            items:[
+                            title: 'Tuesday',
+                            items: [
                                 {
-                                    xtype: 'displayfield',
-                                    fieldLabel: 'Intensity',
-                                    bind:{
-                                        value: '{currentWeekWeather.precipIntensity}'
-                                    }
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    fieldLabel: 'Max',
-                                    bind:{
-                                        value: '{currentWeekWeather.precipIntensityMax}'
-                                    }
+                                    xtype: 'dailyweatherpanel'
                                 }
-
                             ]
                         },
                         {
-                            xtype: 'fieldset',
-                            title:'Temperature',
-                            items:[
+                            title: 'Wednesday',
+                            items: [
                                 {
-                                    xtype: 'displayfield',
-                                    fieldLabel: 'High',
-                                    bind:{
-                                        value: '{currentWeekWeather.temperatureHigh}'
-                                    }
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    fieldLabel: 'Max',
-                                    bind:{
-                                        value: '{currentWeekWeather.temperatureLow}'
-                                    }
+                                    xtype: 'dailyweatherpanel'
                                 }
-
                             ]
                         },
                         {
-                            xtype: 'fieldset',
-                            title:'Humidity',
-                            items:[
+                            title: 'Thursday',
+                            items: [
                                 {
-                                    xtype: 'displayfield',
-                                    fieldLabel: 'Humidity',
-                                    bind:{
-                                        value: '{currentWeekWeather.humidity}'
-                                    }
+                                    xtype: 'dailyweatherpanel'
                                 }
-
+                            ]
+                        },
+                        {
+                            title: 'Friday',
+                            items: [
+                                {
+                                    xtype: 'dailyweatherpanel'
+                                }
+                            ]
+                        },
+                        {
+                            title: 'Saturday',
+                            items: [
+                                {
+                                    xtype: 'dailyweatherpanel'
+                                }
+                            ]
+                        },
+                        {
+                            title: 'Sunday',
+                            items: [
+                                {
+                                    xtype: 'dailyweatherpanel'
+                                }
                             ]
                         }
-
-
-
-                    ]
+                    ],
+                    listeners:{
+                        tabchange:'onWeatherTabChange'
+                    }
                 }
 
             ]

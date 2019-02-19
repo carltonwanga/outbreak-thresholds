@@ -1189,6 +1189,7 @@ $include-idsr-view-main-mainmodel: dynamic(true);;
 $include-idsr-view-malariacalculatethreshold-malariacalculatethreshold: dynamic(true);;
 $include-idsr-view-malariacalculatethreshold-malariacalculatethresholdcontroller: dynamic(true);;
 $include-idsr-view-malariacalculatethreshold-malariacalculatethresholdmodel: dynamic(true);;
+$include-idsr-view-malariathresholdcomputationresults-dailyweatherpanel: dynamic(true);;
 $include-idsr-view-malariathresholdcomputationresults-malariathresholdcomputationresults: dynamic(true);;
 $include-idsr-view-malariathresholdcomputationresults-malariathresholdcomputationresultscontroller: dynamic(true);;
 $include-idsr-view-malariathresholdcomputationresults-malariathresholdcomputationresultsmodel: dynamic(true);;
