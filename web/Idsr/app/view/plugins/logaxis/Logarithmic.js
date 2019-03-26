@@ -11,10 +11,10 @@ Ext.define('Idsr.view.plugins.logaxis.Logarithmic', {
 
     type: 'logarithmic',
     alias: [
-        'axis.logarithmic',
+        'axis.logarithmic'
     ],
     config: {
         layout: 'logarithmic',
-        segmenter: 'logarithmic',
+        segmenter: 'logarithmic'
     }
 });

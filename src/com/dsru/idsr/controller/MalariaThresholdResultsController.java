@@ -33,15 +33,4 @@ public class MalariaThresholdResultsController {
         return malariaThresholdResultsService.subCountyActiveWeeklyResults(request.getParameterMap());
     }
 
-    @RequestMapping(value = "/batchoperations", method = RequestMethod.GET)
-    public String fetchBatchOperations(WebRequest request){
-
-        return malariaThresholdResultsService.fetchBatchOperations(request.getParameterMap());
-    }
-
-    @RequestMapping(value = "/batcherrors/{id}", method = RequestMethod.GET)
-    public String fetchBatchErrors(WebRequest request,@PathVariable Long id){
-
-        return malariaThresholdResultsService.fetchBatchErrors(request.getParameterMap(),id);
-    }
 }

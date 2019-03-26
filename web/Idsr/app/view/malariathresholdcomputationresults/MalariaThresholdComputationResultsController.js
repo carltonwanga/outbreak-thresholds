@@ -34,7 +34,7 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         filters["limit"] = 25;
         this.lookupReference("subCountyCombo").reset();
 
-        this.lookupReference("subCountyCombo").getStore('historicRecords').load({
+        this.lookupReference("subCountyCombo").getStore().load({
             params: filters
         });
 
@@ -194,16 +194,25 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
     },
     onShowWeatherPanel:function () {
         this.sideDisplayShowView('weatherPanel');
-        this.fetchWeatherData();
+        this.lookupReference("weatherPanel").setActiveItem(0);
+        this.fetchWeatherData(0);
     },
-    fetchWeatherData:function(){
+    fetchWeatherData:function(dayOfWeek){
         var me = this;
         var currentRecord = me.getViewModel().get("record");
         var week = currentRecord.get("week");
         var year = currentRecord.get("year");
-        var timeToCheck = this.getDateOfISOWeek(week,year);
+        var startOfWeekTime = this.getDateOfISOWeek(week,year);
+
+
+        var dayOfWeekDate = new Date(startOfWeekTime*1000);
+        dayOfWeekDate.setDate(dayOfWeekDate.getDate() +dayOfWeek);
+
+        var dateOfWeekTime = Math.round(dayOfWeekDate.getTime()/ 1000);
 
         var subCounty = currentRecord.get("sub_county");
+        var dayOfWeekPanel = me.lookupReference("weatherPanel").items.items[dayOfWeek];
+        dayOfWeekPanel.removeAll();
 
         me.getView().mask('Loading... Please wait...');
 
@@ -212,12 +221,19 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
             method:"GET",
             params: {
                 subcounty: subCounty,
-                time:timeToCheck
+                time:dateOfWeekTime
             },
             success: function(response, opts) {
                 me.getView().unmask();
                 var responseData = Ext.JSON.decode(response.responseText);
-                if(responseData!=null){
+                if(typeof(responseData.data.daily) === "undefined"){
+                    Ext.Msg.alert("Error","Could not fetch weather details");
+
+                }else{
+
+                    dayOfWeekPanel.add({
+                        xtype: 'dailyweatherpanel'
+                    });
                     me.getViewModel().set("currentWeekWeather",responseData.data.daily.data[0]);
 
                 }
@@ -232,5 +248,6 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
     },
     onWeatherTabChange:function(tabPanel, newTab){
         var activeTabIndex = tabPanel.items.indexOf(newTab);
+        this.fetchWeatherData(activeTabIndex);
     }
 });

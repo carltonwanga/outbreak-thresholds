@@ -46,8 +46,15 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThreshold', {
                 {
                     xtype: 'gridcolumn',
                     dataIndex: 'time_calculated',
+                    hidden: true,
                     text: 'Time Calculated'
                 },
+                {
+                    xtype: 'gridcolumn',
+                    dataIndex: 'disease_name',
+                    text: 'Disease'
+                },
+
                 {
                     xtype: 'gridcolumn',
                     dataIndex: 'week',
@@ -194,6 +201,24 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThreshold', {
                                     xtype:'fieldset',
                                     title:'Calculation Parameters',
                                     items:[
+                                        {
+                                            xtype:"combobox",
+                                            fieldLabel:"Disease",
+                                            anchor: '80%',
+                                            store:'diseasestore',
+                                            name:'disease',
+                                            reference:'diseaseFilterCombo',
+                                            pickerId:'tCDiseaseCombo',
+                                            valueField:'id',
+                                            displayField:'disease_name',
+                                            listConfig: {
+                                                loadingText: 'Searching...',
+                                                emptyText: 'No Diseases found'
+                                            },
+                                            pageSize: 10
+
+
+                                        },
                                         {
                                             xtype: "combobox",
                                             fieldLabel: 'Week',

@@ -104,13 +104,15 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThresholdControl
 
         var week = me.lookupReference("weeksFilterCombo").getValue();
         var year = me.lookupReference("yearFilterCombo").getValue();
+        var disease = me.lookupReference("diseaseFilterCombo").getValue();
 
         Ext.Ajax.request({
-            url:Idsr.util.Constants.controllersApiFromIndex+'/malariathresholdcalc/check',
+            url:Idsr.util.Constants.controllersApiFromIndex+'/thresholdcalc/check',
             method:"GET",
             params: {
                 week: week,
-                year:year
+                year:year,
+                disease:disease
             },
             success: function(response, opts) {
                 me.getView().unmask();
@@ -147,7 +149,7 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThresholdControl
 
         var calculationForm = me.lookupReference("calculateThresholdsForm");
         calculationForm.getForm().submit({
-            url: Idsr.util.Constants.controllersApiFromIndex+'/malariathresholdcalc/compute',
+            url: Idsr.util.Constants.controllersApiFromIndex+'/thresholdcalc/compute',
             success: function (form, action) {
                 me.getView().unmask();
                 var responseData = Ext.JSON.decode(action.response.responseText);

@@ -45,6 +45,6 @@ Ext.define('Idsr.view.weeklyepidemicdataimportresults.WeeklyEpidemicDataImportRe
             var grid  = this.lookupReference("batchGrid");
             grid.getSelectionModel().select(0);
         }
-    },
+    }
 
 });

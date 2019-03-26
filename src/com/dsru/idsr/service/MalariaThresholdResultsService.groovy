@@ -113,41 +113,6 @@ class MalariaThresholdResultsService {
 
     }
 
-    public String fetchBatchOperations(def parameterMap){
-        def params = CommonUtils.flattenListParam(parameterMap);
-        def start = params.start?.toInteger();
-        def limit = params.limit?.toInteger();
-        def query = params.query?.toInteger();
-
-        def countParamStatus = false;
-        def filterStr = "";
-
-        if(query){
-            filterStr = " WHERE id = ?.batchId ";
-            countParamStatus = true;
-        }
-        def sqlParams = [start: start, limit: limit, batchId: query];
-
-        def queryStr  = "SELECT * FROM outbreak_threshold_computation_batch "+filterStr+" LIMIT ?.limit OFFSET ?.start";
-        def countStr = "SELECT COUNT(1) FROM outbreak_threshold_computation_batch "+filterStr;
-        return  CommonDbFunctions.returnJsonFromQueryWithCount(queryStr,countStr, sqlParams, countParamStatus);
-
-    }
-
-    public String fetchBatchErrors(def parameterMap,long batchId){
-        def params = CommonUtils.flattenListParam(parameterMap);
-        def start = params.start?.toInteger();
-        def limit = params.limit?.toInteger();
-        def countParamStatus = true;
-
-        def sqlParams = [start: start, limit: limit,batchId: batchId];
-
-        def queryStr  = """SELECT outbreak_threshold_computation_errors.*,sub_county.name AS sub_county_name FROM outbreak_threshold_computation_errors,sub_county WHERE outbreak_threshold_computation_errors.sub_county = sub_county.dhis2_code AND batch_id = ?.batchId LIMIT ?.limit OFFSET ?.start""";
-        def countStr = "SELECT COUNT(1) FROM outbreak_threshold_computation_errors WHERE batch_id = ?.batchId";
-        return  CommonDbFunctions.returnJsonFromQueryWithCount(queryStr,countStr, sqlParams, countParamStatus);
-
-    }
-
     public String subCountyActiveWeeklyResults(def parameterMap){
         def params = CommonUtils.flattenListParam(parameterMap);
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();

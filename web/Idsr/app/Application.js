@@ -14,11 +14,13 @@ Ext.define('Idsr.Application', {
 
     stores: [
         'NavigationTree',
+        'SurveyQuestionsStore',
         'County',
         'SubCounty',
         'ThresholdInferences',
         'CartesianSeries',
         'IdentificationType',
+        'Disease',
         'Routes'
     ],
     views: [
@@ -35,7 +37,14 @@ Ext.define('Idsr.Application', {
         'Idsr.view.users.Users',
         'Idsr.view.roles.Roles',
         'Idsr.view.usereventlogs.UserEventLogs',
-        'Idsr.view.userloginlogs.UserLoginLogs'
+        'Idsr.view.userloginlogs.UserLoginLogs',
+        'Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdComputationResults',
+        'Idsr.view.meningitisthresholdtracker.MeningitisThresholdTracker',
+        'Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdComputationResults',
+        'Idsr.view.surveyconfiguration.SurveyConfiguration',
+        'Idsr.view.surveyoptionsconfig.SurveyOptionsConfig'
+
+
 
     ],
     

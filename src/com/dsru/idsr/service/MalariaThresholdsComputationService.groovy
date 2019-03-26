@@ -407,18 +407,5 @@ class MalariaThresholdsComputationService {
         return Math.sqrt(standardDeviation/(length-1));
     }
 
-    public String requestMalariaCalculation(String requestStr,String ip,String user){
-        Map params = new JsonSlurper().parseText(requestStr);
-        Map res = [success:true,status:0];
-        auditService.logAuditEvent("Computation of malaria thresholds",ip,user,"Week:"+params.week+",Year:"+params.year);
 
-        def batchId = computeMalariaThresholds(params.week,params.year);
-
-        if(batchId){
-            res.status = 1;
-            res.put("data",batchId);
-        }
-        return JsonOutput.toJson(res);
-
-    }
 }

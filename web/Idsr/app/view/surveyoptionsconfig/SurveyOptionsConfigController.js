@@ -10,5 +10,24 @@ Ext.define('Idsr.view.surveyoptionsconfig.SurveyOptionsConfigController', {
      */
     init: function() {
 
+    },
+    select: function(rowmodel, record, index, eOpts) {
+        var theController = this;
+
+        // Set selected record
+        this.getViewModel().set('record', record);
+        // Show details
+        this.showView('surveyGrid');
+        var task = new Ext.util.DelayedTask(function(){
+            theController.getStore('optionItems').load();
+        });
+        task.delay(200);
+
+    },
+    showView: function(view) {
+        var layout = this.getReferences().display.getLayout();
+        layout.setActiveItem(this.lookupReference(view));
     }
+
+
 });

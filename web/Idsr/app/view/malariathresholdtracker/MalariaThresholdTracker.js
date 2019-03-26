@@ -19,7 +19,7 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
     },
 
     controller: 'malariathresholdtracker',
-    title:'Threshold Year Tracking',
+    title:'Malaria Thresholds Year Tracking',
 
     bodyPadding: 10,
     margin:'10 5 10 5',

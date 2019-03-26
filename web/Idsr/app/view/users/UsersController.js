@@ -28,7 +28,7 @@ Ext.define('Idsr.view.users.UsersController', {
             record = form.getRecord(),
             store = this.getStore('users');
 
-        console.log(record);
+       
 
         // Valid
         if (form.isValid()) {

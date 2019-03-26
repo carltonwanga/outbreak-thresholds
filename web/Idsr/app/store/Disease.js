@@ -3,28 +3,24 @@
  */
 Ext.define('Idsr.store.Disease', {
     extend: 'Ext.data.Store',
+    requires: [
+        'Ext.data.proxy.Rest',
+        'Idsr.util.Constants'
+    ],
+    storeId: 'diseasestore',
 
-    /*
-    Uncomment to use a specific model class
-    model: 'User',
-    */
+    fields:['id','disease_name','dhis2_code'],
+    autoLoad: true,
+    proxy:{
+        type: 'rest',
+        pageSize: 10,
+        url: Idsr.util.Constants.controllersApiFromIndex+'/diseases',
+        reader: {
+            type: 'json',
+            rootProperty: 'data'
 
-    /*
-    Fields can also be declared without a model class:
-    fields: [
-        {name: 'firstName', type: 'string'},
-        {name: 'lastName',  type: 'string'},
-        {name: 'age',       type: 'int'},
-        {name: 'eyeColor',  type: 'string'}
-    ]
-    */
+        }
+    }
 
-    /*
-    Uncomment to specify data inline
-    data : [
-        {firstName: 'Ed',    lastName: 'Spencer'},
-        {firstName: 'Tommy', lastName: 'Maintz'},
-        {firstName: 'Aaron', lastName: 'Conran'}
-    ]
-    */
+
 });

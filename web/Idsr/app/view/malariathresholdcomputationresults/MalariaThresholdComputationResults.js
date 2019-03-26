@@ -662,60 +662,25 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                     title:'Weather Details',
                     items:[
                         {
-                            title: 'Monday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Monday'
                         },
                         {
-                            title: 'Tuesday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Tuesday'
                         },
                         {
-                            title: 'Wednesday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Wednesday'
                         },
                         {
-                            title: 'Thursday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Thursday'
                         },
                         {
-                            title: 'Friday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Friday'
                         },
                         {
-                            title: 'Saturday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Saturday'
                         },
                         {
-                            title: 'Sunday',
-                            items: [
-                                {
-                                    xtype: 'dailyweatherpanel'
-                                }
-                            ]
+                            title: 'Sunday'
                         }
                     ],
                     listeners:{

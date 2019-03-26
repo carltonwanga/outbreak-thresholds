@@ -277,10 +277,10 @@ class UserService {
         sql.close();
     }
 
-    public static String changeStatus(int userId,boolean value){
+    public static String changeStatus(int surveyId,boolean value){
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
         Sql sql = new Sql(dataSource);
-        Map params = ["id":userId,"status":value];
+        Map params = ["id":surveyId,"status":value];
         def res = [success:true,status:0,message:'Could not reset user status']; ;
         def affectedRows = sql.executeUpdate("UPDATE users SET is_active = ?.status WHERE id =?.id",params);
         sql.close();

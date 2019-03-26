@@ -1,30 +1,19 @@
 /**
  * Created by PAVILION 15 on 2/27/2019.
  */
-Ext.define('Idsr.store.SurveyQuestonsStore', {
-    extend: 'Ext.data.Store',
+Ext.define('Idsr.store.SurveyQuestionsStore', {
+    extend: 'Ext.data.TreeStore',
+    storeId: 'SurveyQuestionsStore',
 
-    /*
-    Uncomment to use a specific model class
-    model: 'User',
-    */
-
-    /*
-    Fields can also be declared without a model class:
     fields: [
-        {name: 'firstName', type: 'string'},
-        {name: 'lastName',  type: 'string'},
-        {name: 'age',       type: 'int'},
-        {name: 'eyeColor',  type: 'string'}
-    ]
-    */
+        'id','survey_id','question_narrative','expected_response_type','expected_response_name','notes','condition_id','condition_name','condition_narration','condition_value','is_active'
+    ],
 
-    /*
-    Uncomment to specify data inline
-    data : [
-        {firstName: 'Ed',    lastName: 'Spencer'},
-        {firstName: 'Tommy', lastName: 'Maintz'},
-        {firstName: 'Aaron', lastName: 'Conran'}
-    ]
-    */
-});
+    root: {
+        expanded: true,
+        children: [
+
+        ]
+    }
+
+    });

@@ -5,19 +5,45 @@ Ext.define('Idsr.view.surveyconfiguration.SurveyConfigurationModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.surveyconfiguration',
 
-    stores: {
-        /*
-        A declaration of Ext.data.Store configurations that are first processed as binds to produce an effective
-        store configuration. For example:
-
-        users: {
-            model: 'SurveyConfiguration',
-            autoLoad: true
+    formulas: {
+        statusAction: function (get) {
+            var activeStatus = get('record').data.is_active;
+            if(activeStatus){
+                return "Deactivate";
+            }else{
+                return "Activate"
+            }
         }
-        */
+    },
+
+    stores: {
+        surveys:{
+            fields:['id','disease','title','notes','is_active','configuration_complete','disease_name'],
+            autoLoad: true,
+            proxy: {
+                type: 'rest',
+                autoLoad: true,
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                },
+                writer: {
+                    type: 'json',
+                    writeAllFields: true
+                },
+                url: Idsr.util.Constants.controllersApiFromIndex+"/surveyconfig"
+            }
+
+        },
+        responseTypes:{
+
+
+        }
+
+
     },
 
     data: {
-        /* This object holds the arbitrary data that populates the ViewModel and is then available for binding. */
+
     }
 });

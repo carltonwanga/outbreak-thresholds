@@ -6,15 +6,40 @@ Ext.define('Idsr.view.surveyoptionsconfig.SurveyOptionsConfigModel', {
     alias: 'viewmodel.surveyoptionsconfig',
 
     stores: {
-        /*
-        A declaration of Ext.data.Store configurations that are first processed as binds to produce an effective
-        store configuration. For example:
+        options:{
+            fields:['id','options_name','is_active'],
+            autoLoad: true,
+            proxy: {
+                type: 'rest',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                },
+                writer: {
+                    type: 'json',
+                    writeAllFields: true
+                },
+                url: Idsr.util.Constants.controllersApiFromIndex+"/surveyoptions"
+            }
 
-        users: {
-            model: 'SurveyOptionsConfig',
-            autoLoad: true
+        },
+        optionItems:{
+            fields:['id','option_id','item_number','option_name'],
+            autoLoad: true,
+            proxy: {
+                type: 'rest',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                },
+                writer: {
+                    type: 'json',
+                    writeAllFields: true
+                },
+                url: Idsr.util.Constants.controllersApiFromIndex+"/surveyoptions/{record.id}"
+            }
         }
-        */
+
     },
 
     data: {

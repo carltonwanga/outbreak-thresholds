@@ -7,7 +7,7 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThresholdModel',
 
     stores: {
         batchResults: {
-            fields:['id','time_calculated','week','year','total_computed','total_errors'],
+            fields:['id','time_calculated','week','year','disease_name','total_computed','total_errors'],
             autoLoad: true,
             listeners: {
                 load: 'onBatchStoreLoad'
@@ -18,7 +18,7 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThresholdModel',
                     type: 'json',
                     rootProperty: 'data'
                 },
-                url: Idsr.util.Constants.controllersApiFromIndex+"/malariathresholdres/batchoperations"
+                url: Idsr.util.Constants.controllersApiFromIndex+"/thresholdcalc/batchoperations"
             }
         },
         batchErrors: {
@@ -30,7 +30,7 @@ Ext.define('Idsr.view.malariacalculatethreshold.MalariaCalculateThresholdModel',
                     type: 'json',
                     rootProperty: 'data'
                 },
-                url: Idsr.util.Constants.controllersApiFromIndex+"/malariathresholdres/batcherrors/{record.id}"
+                url: Idsr.util.Constants.controllersApiFromIndex+"/thresholdcalc/batcherrors/{record.id}"
             }
         }
     },
