@@ -65,6 +65,10 @@ Ext.define('Idsr.model.User', {
         {
             type: 'string',
             name: 'subCounty'
+        },
+        {
+            type: 'boolean',
+            name: 'sendSubcountySurveys'
         }
     ]
 });

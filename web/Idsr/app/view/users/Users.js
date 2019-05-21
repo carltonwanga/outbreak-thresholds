@@ -202,6 +202,13 @@ Ext.define('Idsr.view.users.Users', {
                                             bind: {
                                                 value: '{record.subCountyName}'
                                             }
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            fieldLabel: 'Send SubCounty Survey',
+                                            bind: {
+                                                value: '{record.sendSubcountySurveys}'
+                                            }
                                         }
                                     ]
                                 }
@@ -379,6 +386,12 @@ Ext.define('Idsr.view.users.Users', {
                                             }
                                         }
                                     ]
+
+                                },
+                                {
+                                    xtype:'checkbox',
+                                    boxLabel: 'Send Sub County Surveys',
+                                    name: 'sendSubcountySurveys'
 
                                 }
                             ]

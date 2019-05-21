@@ -265,6 +265,43 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                                             }
                                         }
                                     ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: {
+                                        type: 'hbox',
+                                        align: 'stretch'
+                                    },
+                                    items:[
+                                        {
+                                            xtype: 'combobox',
+                                            fieldLabel: 'Confirmation',
+                                            labelWidth: 60,
+                                            reference:'confirmationFilterCombo',
+                                            name:'confirmation',
+                                            store:[
+                                                [
+                                                    true,
+                                                    'Confirmed'
+                                                ],
+                                                [
+                                                    false,
+                                                    'Not Confirmed'
+                                                ]
+                                            ]
+
+                                        },
+                                        {
+                                            xtype: 'button',
+                                            iconCls: 'fa fa-times',
+                                            ui:'soft-red',
+                                            margin: '0 4 0 0',
+                                            tooltip: 'Reset Status',
+                                            listeners: {
+                                                click: 'onConfirmatonFilterReset'
+                                            }
+                                        }
+                                    ]
                                 }
 
 
@@ -418,7 +455,27 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                         listeners: {
                             click: 'onShowWeatherPanel'
                         }
+                    },
+                    {
+                        xtype: 'button',
+                        text:'Initiate IVR confirmation',
+                        iconCls: 'fa fa-list',
+                        hidden: true,
+                        ui:'soft-green',
+                        listeners: {
+                            click: 'onInitiateIvrConfirmation'
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        text:'Set Confirmation Status',
+                        iconCls: 'fa fa-check',
+                        ui:'soft-blue',
+                        listeners: {
+                            click: 'onSetConfirmationResult'
+                        }
                     }
+
                 ]
             }
 
@@ -639,6 +696,26 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                             ]
                         },
                         {
+                            xtype: 'fieldset',
+                            title: 'Confirmation',
+                            items: [
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Inference',
+                                    bind: {
+                                        value: '{record.result_confirmed}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Notes',
+                                    bind: {
+                                        value: '{record.confirmation_notes}'
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             xtype: 'displayfield',
                             fieldLabel: 'Batch Id',
                             bind: {
@@ -686,6 +763,93 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                     listeners:{
                         tabchange:'onWeatherTabChange'
                     }
+                },
+                {
+                    xtype:'form',
+                    reference:'confirmationStatusPanel',
+                    title:'Threshold Confirmation',
+                    bodyPadding:5,
+                    items:[
+                        {
+                            xtype:'fieldset',
+                            title:'Confirmation Results',
+                            items:[
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: 'Id',
+                                    name:'id',
+                                    hidden:true,
+                                    bind: {
+                                        value: '{record.id}'
+                                    }
+                                },
+                                {
+                                    xtype: 'combobox',
+                                    fieldLabel: 'Status',
+                                    anchor:'70%',
+                                    allowBlank:false,
+                                    reference:'confirmationStatusCombo',
+                                    name:'status',
+                                    store:[
+                                        [
+                                            'true',
+                                            'True'
+                                        ],
+                                        [
+                                            'false',
+                                            'False'
+                                        ]
+                                    ]
+
+                                },
+                                {
+                                    xtype:'textarea',
+                                    fieldLabel:'Confirmation Notes',
+                                    allowBlank:false,
+                                    anchor:'70%',
+                                    maxLength:250,
+                                    name:'confirmation_notes'
+
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'container',
+                            padding: 10,
+                            layout: {
+                                type: 'hbox',
+                                align: 'middle',
+                                pack: 'center'
+                            },
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    flex: 1,
+                                    ui: 'soft-blue',
+                                    formBind:true,
+                                    iconCls: 'x-fa fa-save',
+                                    margin: 5,
+                                    text: 'Submit',
+                                    listeners: {
+                                        click: 'onSaveConfirmationResults'
+                                    }
+                                },
+                                {
+                                    xtype: 'button',
+                                    flex: 1,
+                                    ui: 'soft-red',
+                                    iconCls: 'x-fa fa-arrow-left',
+                                    margin: 5,
+                                    text: 'Cancel',
+                                    listeners: {
+                                        click: 'onCancelConfirmationForm'
+                                    }
+                                }
+                            ]
+                        }
+
+
+                    ]
                 }
 
             ]

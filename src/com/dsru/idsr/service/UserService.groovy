@@ -5,7 +5,6 @@ import com.dsru.idsr.util.CommonResponse
 import com.dsru.idsr.components.EmailSender
 import com.dsru.idsr.db.CommonDbFunctions
 import com.dsru.idsr.db.DataSourceFactory
-import com.dsru.idsr.model.UsersEntity
 import com.dsru.idsr.util.CommonUtils
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -53,9 +52,15 @@ class UserService {
                 user.put("nationalUser",false);
             }
 
+            if(user.get("sendSubcountySurveys")=="on"){
+                user.put("sendSurveys",true);
+            }else{
+                user.put("sendSurveys",false);
+            }
+
             def savedUser = sql.executeInsert("""
-                INSERT INTO users(first_name, middle_name, last_name, email, phone_number, identification_type, identification_number, is_active, is_national_user, sub_county) 
-                           VALUES(?.firstName,?.middleName,?.lastName,?.email,?.phoneNumber,?.identificationType,?.identificationNumber,FALSE,?.nationalUser,?.subcounty)
+                INSERT INTO users(first_name, middle_name, last_name, email, phone_number, identification_type, identification_number, is_active, is_national_user, sub_county,send_subcounty_surveys) 
+                           VALUES(?.firstName,?.middleName,?.lastName,?.email,?.phoneNumber,?.identificationType,?.identificationNumber,FALSE,?.nationalUser,?.subcounty,?.sendSurveys)
             """,user);
 
             if (savedUser) {
@@ -253,6 +258,7 @@ class UserService {
                 users.identification_number "identificationNumber",
                 users.is_active "isActive", 
                 users.is_national_user "isNationalUser",
+                users.send_subcounty_surveys "sendSubcountySurveys",
                 CASE
                     WHEN users.sub_county IS NULL THEN ''
                     ELSE (SELECT sub_county.name FROM sub_county WHERE sub_county.dhis2_code = users.sub_county) END AS "subCountyName",
@@ -430,6 +436,12 @@ class UserService {
             userDetails.put("nationalUser",false);
         }
 
+        if(userDetails.get("sendSubcountySurveys")=="on"){
+            userDetails.put("sendSurveys",true);
+        }else{
+            userDetails.put("sendSurveys",false);
+        }
+
         def firstName = userDetails.firstName;
         def middleName = userDetails.middleName;
         def lastName = userDetails.lastName;
@@ -439,10 +451,11 @@ class UserService {
         def identificationNumber = userDetails.identificationNumber;
         def isNationalUser = userDetails.nationalUser;
         def subCounty = userDetails.subcounty;
+        def sendSurveys = userDetails.sendSubcountySurveys;
 
-        Map queryParams = [firstName:firstName, middleName:middleName, lastName:lastName, email:email, phoneNumber:phoneNumber, identificationType:identificationType, identificationNumber:identificationNumber, userId: userId,isNationalUser:isNationalUser,subCounty:subCounty];
+        Map queryParams = [firstName:firstName, middleName:middleName, lastName:lastName, email:email, phoneNumber:phoneNumber, identificationType:identificationType, identificationNumber:identificationNumber, userId: userId,isNationalUser:isNationalUser,subCounty:subCounty, sendSurveys:sendSurveys];
 
-        int update = sql.executeUpdate("UPDATE users SET first_name = ?.firstName, middle_name = ?.middleName, last_name = ?.lastName, phone_number = ?.phoneNumber, identification_type = ?.identificationType, identification_number = ?.identificationNumber,is_national_user = ?.isNationalUser,sub_county = ?.subCounty WHERE id = ?.userId", queryParams);
+        int update = sql.executeUpdate("UPDATE users SET first_name = ?.firstName, middle_name = ?.middleName, last_name = ?.lastName, phone_number = ?.phoneNumber, identification_type = ?.identificationType, identification_number = ?.identificationNumber,is_national_user = ?.isNationalUser,sub_county = ?.subCounty, send_subcounty_surveys = ?.sendSurveys WHERE id = ?.userId", queryParams);
         sql.close();
         if(update > 0){
             res.success = true;

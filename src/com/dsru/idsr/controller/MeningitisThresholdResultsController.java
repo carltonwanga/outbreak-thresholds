@@ -32,4 +32,9 @@ public class MeningitisThresholdResultsController {
 
         return meningitisThresholdResultsService.subCountyActiveWeeklyResults(request.getParameterMap());
     }
+    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
+    public String confirmMeningitisThresholdRes(WebRequest request){
+
+        return meningitisThresholdResultsService.updateThresholdConfirmationStatus(request.getParameterMap());
+    }
 }

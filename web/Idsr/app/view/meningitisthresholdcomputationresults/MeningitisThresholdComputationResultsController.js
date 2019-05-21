@@ -54,6 +54,10 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
     onStatusFilterReset:function(){
         this.lookupReference("statusFilterCombo").setValue("active");
     },
+    onConfirmatonFilterReset:function(){
+        this.lookupReference("confirmationFilterCombo").reset();
+        this.onSubmitFilterClick();
+    },
     onResetInference:function(){
         this.lookupReference("thresholdInferenceStore").reset();
         this.onSubmitFilterClick();
@@ -169,5 +173,44 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
         });
         this.lookupReference('yearFilterCombo').setStore(yearsStore);
 
+    },
+    onSetConfirmationResult:function(){
+        var me = this;
+        me.sideDisplayShowView('confirmationStatusPanel');
+
+    },
+    onSaveConfirmationResults:function(){
+        var me = this;
+        var form = this.lookupReference("confirmationStatusPanel");
+
+        var requestUrl = Idsr.util.Constants.controllersApiFromIndex+"/meningitisthresholdres/confirm";
+        form.submit({
+            url:requestUrl,
+            waitMsg:'Saving...',
+            method:"POST",
+            success: function (form, action) {
+                var responseStatus = action.result.status;
+                if(responseStatus == 1){
+                    Ext.Msg.alert('Success', "Confirmation Saved");
+                    form.reset();
+                    me.getStore('thresholdResults').reload();
+                    me.sideDisplayShowView("details");
+
+                    //Update Status Details
+                }else{
+                    Ext.Msg.alert('Failed', "Could not Save Threshold Confirmation");
+                }
+
+            },
+            failure: function (form, action) {
+                Ext.Msg.alert('Failed', "Could not Save Threshold Confirmation");
+            }
+
+        });
+
+    },
+    onCancelConfirmationForm:function () {
+        this.lookupReference("confirmationStatusPanel").reset();
+        this.sideDisplayShowView('details');
     }
 });

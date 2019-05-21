@@ -48,6 +48,10 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         this.lookupReference("weeksFilterCombo").reset();
         this.onSubmitFilterClick();
     },
+    onConfirmatonFilterReset:function(){
+        this.lookupReference("confirmationFilterCombo").reset();
+        this.onSubmitFilterClick();
+    },
     onYearFilterReset:function(){
         this.lookupReference("yearFilterCombo").reset();
         this.onSubmitFilterClick();
@@ -197,6 +201,34 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
         this.lookupReference("weatherPanel").setActiveItem(0);
         this.fetchWeatherData(0);
     },
+    onInitiateIvrConfirmation:function () {
+        var me = this;
+        var currentRecord = me.getViewModel().get("record");
+        var id = currentRecord.get("id");
+        me.getView().mask('Loading... Please wait...');
+
+        Ext.Ajax.request({
+            url:Idsr.util.Constants.controllersApiFromIndex+'/confirmationivr/initiate',
+            method:"POST",
+            params: {
+                disease: 1,
+                resultId:id
+            },
+            success: function(response, opts) {
+                me.getView().unmask();
+                var responseData = Ext.JSON.decode(response.responseText);
+                if(responseData.status == 1){
+                    Ext.Msg.alert("Success","Survey Initiated");
+                }else{
+                    Ext.Msg.alert("Error","Could not initiate Survey");
+                }
+                            },
+            failure: function(response, opts) {
+                me.getView().unmask();
+                Ext.Msg.alert("Error","Could not initiate Survey");
+            }
+        });
+    },
     fetchWeatherData:function(dayOfWeek){
         var me = this;
         var currentRecord = me.getViewModel().get("record");
@@ -249,5 +281,44 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
     onWeatherTabChange:function(tabPanel, newTab){
         var activeTabIndex = tabPanel.items.indexOf(newTab);
         this.fetchWeatherData(activeTabIndex);
+    },
+    onSetConfirmationResult:function(){
+        var me = this;
+        me.sideDisplayShowView('confirmationStatusPanel');
+
+    },
+    onSaveConfirmationResults:function(){
+        var me = this;
+        var form = this.lookupReference("confirmationStatusPanel");
+
+        var requestUrl = Idsr.util.Constants.controllersApiFromIndex+"/malariathresholdres/confirm";
+        form.submit({
+            url:requestUrl,
+            waitMsg:'Saving...',
+            method:"POST",
+            success: function (form, action) {
+                var responseStatus = action.result.status;
+                if(responseStatus == 1){
+                    Ext.Msg.alert('Success', "Confirmation Saved");
+                    form.reset();
+                    me.getStore('thresholdResults').reload();
+                    me.sideDisplayShowView("details");
+
+                    //Update Status Details
+                }else{
+                    Ext.Msg.alert('Failed', "Could not Save Threshold Confirmation");
+                }
+
+            },
+            failure: function (form, action) {
+                Ext.Msg.alert('Failed', "Could not Save Threshold Confirmation");
+            }
+
+        });
+
+    },
+    onCancelConfirmationForm:function () {
+        this.lookupReference("confirmationStatusPanel").reset();
+        this.sideDisplayShowView('details');
     }
 });

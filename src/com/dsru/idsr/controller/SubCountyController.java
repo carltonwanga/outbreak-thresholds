@@ -2,9 +2,8 @@ package com.dsru.idsr.controller;
 
 import com.dsru.idsr.service.SubCountyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 @RestController
@@ -15,8 +14,15 @@ public class SubCountyController {
     SubCountyService subCountyService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String fetchHistoricRecords(WebRequest request){
+    public String fetchSubCounties(WebRequest request){
 
         return subCountyService.fetchSubCounties(request.getParameterMap());
+    }
+
+    @RequestMapping(value = "/{id}",method = RequestMethod.POST)
+    public String editSubCounties( @PathVariable long id, @RequestBody String body){
+
+        return subCountyService.editSubCounty(body,id);
+
     }
 }

@@ -42,7 +42,8 @@ Ext.define('Idsr.Application', {
         'Idsr.view.meningitisthresholdtracker.MeningitisThresholdTracker',
         'Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdComputationResults',
         'Idsr.view.surveyconfiguration.SurveyConfiguration',
-        'Idsr.view.surveyoptionsconfig.SurveyOptionsConfig'
+        'Idsr.view.surveyoptionsconfig.SurveyOptionsConfig',
+        'Idsr.view.subcountyconfig.SubCountyConfig'
 
 
 

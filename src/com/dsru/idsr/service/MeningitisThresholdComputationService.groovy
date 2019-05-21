@@ -66,7 +66,7 @@ class MeningitisThresholdComputationService {
 
         List<SubCountyWeekResultItem> weekSubCountyRecords = fetchDhis2SubCountyMeningitisWeeklySummaries(week,currentYear);
 
-        DriverManagerDataSource dataSource = DataSourceFactory.getTestApplication();
+        DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
 
         Sql sql = new Sql(dataSource);
         String meningitis_disease_code = sql.firstRow("SELECT disease_mapping.dhis2_code FROM disease_mapping WHERE id = ?",2).get("dhis2_code");

@@ -33,4 +33,10 @@ public class MalariaThresholdResultsController {
         return malariaThresholdResultsService.subCountyActiveWeeklyResults(request.getParameterMap());
     }
 
+    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
+    public String confirmMalariaThresholdRes(WebRequest request){
+
+        return malariaThresholdResultsService.updateThresholdConfirmationStatus(request.getParameterMap());
+    }
+
 }

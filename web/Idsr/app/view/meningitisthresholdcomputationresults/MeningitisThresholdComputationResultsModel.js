@@ -10,7 +10,7 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
             fields:['id','week','year','sub_county_name','county_name','time_calculated',
                 'cases_reported','alert_threshold','action_threshold','sub_county','narration',
                 'inference_name','alert_color_codes','inference_id','batch_id',
-                'population_used','is_active'
+                'population_used','is_active','result_confirmed','confirmation_notes'
             ],
             autoLoad: true,
             proxy: {

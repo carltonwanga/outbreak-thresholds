@@ -267,6 +267,43 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
                                             }
                                         }
                                     ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: {
+                                        type: 'hbox',
+                                        align: 'stretch'
+                                    },
+                                    items:[
+                                        {
+                                            xtype: 'combobox',
+                                            fieldLabel: 'Confirmation',
+                                            labelWidth: 60,
+                                            reference:'confirmationFilterCombo',
+                                            name:'confirmation',
+                                            store:[
+                                                [
+                                                    true,
+                                                    'Confirmed'
+                                                ],
+                                                [
+                                                    false,
+                                                    'Not Confirmed'
+                                                ]
+                                            ]
+
+                                        },
+                                        {
+                                            xtype: 'button',
+                                            iconCls: 'fa fa-times',
+                                            ui:'soft-red',
+                                            margin: '0 4 0 0',
+                                            tooltip: 'Reset Status',
+                                            listeners: {
+                                                click: 'onConfirmatonFilterReset'
+                                            }
+                                        }
+                                    ]
                                 }
 
 
@@ -406,7 +443,21 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
                 displayInfo: true,
                 displayText: 'Displaying record {0} - {1} of {2}',
                 emptyText: 'No records to display'
-            })
+            }),
+            tbar: {
+                items: [
+                    {
+                        xtype: 'button',
+                        text:'Set Confirmation Status',
+                        iconCls: 'fa fa-check',
+                        ui:'soft-blue',
+                        listeners: {
+                            click: 'onSetConfirmationResult'
+                        }
+                    }
+
+                ]
+            }
 
         },
         {
@@ -552,6 +603,26 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
                             ]
                         },
                         {
+                            xtype: 'fieldset',
+                            title: 'Confirmation',
+                            items: [
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Inference',
+                                    bind: {
+                                        value: '{record.result_confirmed}'
+                                    }
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    fieldLabel: 'Notes',
+                                    bind: {
+                                        value: '{record.confirmation_notes}'
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             xtype: 'displayfield',
                             fieldLabel: 'Batch Id',
                             bind: {
@@ -567,6 +638,93 @@ Ext.define('Idsr.view.meningitisthresholdcomputationresults.MeningitisThresholdC
                         }
                     ]
 
+                },
+                {
+                    xtype:'form',
+                    reference:'confirmationStatusPanel',
+                    title:'Threshold Confirmation',
+                    bodyPadding:5,
+                    items:[
+                        {
+                            xtype:'fieldset',
+                            title:'Confirmation Results',
+                            items:[
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: 'Id',
+                                    name:'id',
+                                    hidden:true,
+                                    bind: {
+                                        value: '{record.id}'
+                                    }
+                                },
+                                {
+                                    xtype: 'combobox',
+                                    fieldLabel: 'Status',
+                                    anchor:'70%',
+                                    allowBlank:false,
+                                    reference:'confirmationStatusCombo',
+                                    name:'status',
+                                    store:[
+                                        [
+                                            'true',
+                                            'True'
+                                        ],
+                                        [
+                                            'false',
+                                            'False'
+                                        ]
+                                    ]
+
+                                },
+                                {
+                                    xtype:'textarea',
+                                    fieldLabel:'Confirmation Notes',
+                                    allowBlank:false,
+                                    anchor:'70%',
+                                    maxLength:250,
+                                    name:'confirmation_notes'
+
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'container',
+                            padding: 10,
+                            layout: {
+                                type: 'hbox',
+                                align: 'middle',
+                                pack: 'center'
+                            },
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    flex: 1,
+                                    ui: 'soft-blue',
+                                    formBind:true,
+                                    iconCls: 'x-fa fa-save',
+                                    margin: 5,
+                                    text: 'Submit',
+                                    listeners: {
+                                        click: 'onSaveConfirmationResults'
+                                    }
+                                },
+                                {
+                                    xtype: 'button',
+                                    flex: 1,
+                                    ui: 'soft-red',
+                                    iconCls: 'x-fa fa-arrow-left',
+                                    margin: 5,
+                                    text: 'Cancel',
+                                    listeners: {
+                                        click: 'onCancelConfirmationForm'
+                                    }
+                                }
+                            ]
+                        }
+
+
+                    ]
                 }
             ]
 

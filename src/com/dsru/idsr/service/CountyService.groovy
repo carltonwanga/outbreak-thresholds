@@ -12,12 +12,18 @@ class CountyService {
         def params = CommonUtils.flattenListParam(parameterMap);
         def start = params.start?.toInteger();
         def limit = params.limit?.toInteger();
-
+        def query = params.query;
         def countParamStatus = false;
+
+        def queryFilter = "";
+        if(query){
+            queryFilter = " WHERE name ILIKE '%$query%' ";
+        }
+
 
         def sqlParams = [start: start, limit: limit];
 
-        def queryStr  = "SELECT * FROM county "+" LIMIT ?.limit OFFSET ?.start";
+        def queryStr  = "SELECT * FROM county "+queryFilter+" LIMIT ?.limit OFFSET ?.start";
         def countStr = "SELECT COUNT(1) FROM county ";
         return  CommonDbFunctions.returnJsonFromQueryWithCount(queryStr,countStr, sqlParams, countParamStatus);
 

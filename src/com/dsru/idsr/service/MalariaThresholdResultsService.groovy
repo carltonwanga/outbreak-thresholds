@@ -55,6 +55,11 @@ class MalariaThresholdResultsService {
 
         }
 
+        if(params.confirmation){
+            filterQuery+=" AND malaria_outbreak_threshold_computation_results.result_confirmed = ${params.confirmation} ";
+
+        }
+
         def sqlParams = [:];
 
         def queryStr  = """SELECT
@@ -85,7 +90,9 @@ class MalariaThresholdResultsService {
         malaria_outbreak_threshold_computation_results.c_sum_1_96_sd,
         malaria_outbreak_threshold_computation_results.reporting_rate,
         malaria_outbreak_threshold_computation_results.extrapolated_cases,
-        malaria_outbreak_threshold_computation_results.cases_reported_sd
+        malaria_outbreak_threshold_computation_results.cases_reported_sd,
+        malaria_outbreak_threshold_computation_results.result_confirmed,
+        malaria_outbreak_threshold_computation_results.confirmation_notes
         FROM
         malaria_outbreak_threshold_computation_results,
         sub_county,
@@ -145,4 +152,21 @@ class MalariaThresholdResultsService {
         return JsonOutput.toJson(res);
 
     }
+
+    public String updateThresholdConfirmationStatus(def parameterMap){
+        def params = CommonUtils.flattenListParam(parameterMap);
+
+        Map res = [success: true,status: 0];
+        DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
+        Sql sql = new Sql(dataSource);
+        params.put("parsedId",Integer.parseInt(params.get("id")));
+        params.put("results_confirmed",Boolean.valueOf(params.get("status")));
+        int update = sql.executeUpdate("UPDATE malaria_outbreak_threshold_computation_results SET result_confirmed = ?.results_confirmed, confirmation_notes = ?.confirmation_notes WHERE id = ?.parsedId", params);
+        sql.close();
+        if(update > 0){
+            res.put("status",1);
+        }
+        return JsonOutput.toJson(res);
+    }
+
 }
