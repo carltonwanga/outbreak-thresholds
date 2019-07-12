@@ -85,6 +85,7 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilder', {
                                                         emptyText: 'No sub-counties found'
                                                     },
                                                     flex:1,
+                                                    multiSelect: true,
                                                     allowBlank: false,
                                                     pageSize: 20
 

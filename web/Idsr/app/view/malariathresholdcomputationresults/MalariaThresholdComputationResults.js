@@ -460,7 +460,6 @@ Ext.define('Idsr.view.malariathresholdcomputationresults.MalariaThresholdComputa
                         xtype: 'button',
                         text:'Initiate IVR confirmation',
                         iconCls: 'fa fa-list',
-                        hidden: true,
                         ui:'soft-green',
                         listeners: {
                             click: 'onInitiateIvrConfirmation'

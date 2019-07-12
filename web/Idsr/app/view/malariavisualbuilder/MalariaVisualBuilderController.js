@@ -10,7 +10,6 @@ Ext.define('Idsr.view.malariavisualbuilder.MalariaVisualBuilderController', {
      */
     init: function() {
         this.loadYearStore();
-
     },
     requires: [
         'Ext.util.DelayedTask',

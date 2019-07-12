@@ -5,6 +5,7 @@ import com.dsru.idsr.db.DataSourceFactory
 import com.dsru.idsr.util.CommonUtils
 import groovy.json.JsonOutput
 import groovy.sql.Sql
+import org.apache.commons.lang.StringUtils
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.stereotype.Service
 
@@ -121,13 +122,19 @@ class MalariaThresholdResultsService {
     }
 
     public String subCountyActiveWeeklyResults(def parameterMap){
+        println(parameterMap);
         def params = CommonUtils.flattenListParam(parameterMap);
         DriverManagerDataSource dataSource = DataSourceFactory.getApplicationDataSource();
 
         Map res = [success:true,status:0];
+
+        List selectSubCounties  = parameterMap.get("subcounty");
+        String multSubCounties = "'"+ selectSubCounties.join("','")+ "'";
+        println(multSubCounties);
+
         Map sqlParams = [
                 year:params.year.toInteger(),
-                subCounty:params.subcounty
+                subCounty:multSubCounties
         ];
 
         Sql sql = new Sql(dataSource);
@@ -137,7 +144,7 @@ class MalariaThresholdResultsService {
                     FROM malaria_outbreak_threshold_computation_results,sub_county
                     WHERE
                      malaria_outbreak_threshold_computation_results.sub_county = sub_county.dhis2_code
-                     AND malaria_outbreak_threshold_computation_results.sub_county = ?.subCounty
+                     AND malaria_outbreak_threshold_computation_results.sub_county IN ($multSubCounties)
                      AND malaria_outbreak_threshold_computation_results.year = ?.year
                      AND malaria_outbreak_threshold_computation_results.is_active = TRUE
                      ORDER BY malaria_outbreak_threshold_computation_results.week
