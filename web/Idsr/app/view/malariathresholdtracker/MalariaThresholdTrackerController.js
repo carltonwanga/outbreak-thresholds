@@ -82,6 +82,16 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTrackerController'
         });
 
     },
+    onAddToDashboard:function(){
+        Ext.Msg.confirm('Confirm', 'Are you sure you want to add graph to your tracking dashboard?' , function(result) {
+            if (result == 'yes') {
+
+
+            }
+        });
+
+    },
+
     onThresholdSeriesTooltipRender: function (tooltip, record, item) {
         var title = item.series.getTitle();
 

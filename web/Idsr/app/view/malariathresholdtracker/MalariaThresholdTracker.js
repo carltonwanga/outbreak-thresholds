@@ -279,6 +279,12 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                             iconCls: 'fa fa-line-chart',
                             text: 'Animate',
                             handler: 'onAnimateThresholdLineChart'
+                        }, {
+                            xtype:'button',
+                            ui:'soft-cyan',
+                            iconCls: 'fa fa-download',
+                            text: 'Add to Dashboard',
+                            handler: 'onAddToDashboard'
                         }
                     ]
 
@@ -482,6 +488,13 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                             iconCls: 'fa fa-download',
                             text: 'Download',
                             handler: 'onDownloadPositivityChart'
+                        },
+                        {
+                            xtype:'button',
+                            ui:'soft-cyan',
+                            iconCls: 'fa fa-download',
+                            text: 'Add to Dashboard',
+                            handler: 'onAddToDashboard'
                         }
                     ]
                 },
@@ -682,6 +695,13 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                             iconCls: 'fa fa-download',
                             text: 'Download',
                             handler: 'onDownloadDeathsChart'
+                        },
+                        {
+                            xtype:'button',
+                            ui:'soft-cyan',
+                            iconCls: 'fa fa-download',
+                            text: 'Add to Dashboard',
+                            handler: 'onAddToDashboard'
                         }
                     ]
                 },
@@ -937,6 +957,13 @@ Ext.define('Idsr.view.malariathresholdtracker.MalariaThresholdTracker', {
                             iconCls: 'fa fa-download',
                             text: 'Download',
                             handler: 'onDownloadOtherStatsChart'
+                        },
+                        {
+                            xtype:'button',
+                            ui:'soft-cyan',
+                            iconCls: 'fa fa-download',
+                            text: 'Add to Dashboard',
+                            handler: 'onAddToDashboard'
                         }
                     ]
                 },

@@ -273,6 +273,13 @@ Ext.define('Idsr.view.meningitisthresholdtracker.MeningitisThresholdTracker', {
                     iconCls: 'fa fa-line-chart',
                     text: 'Animate',
                     handler: 'onAnimateThresholdLineChart'
+                },
+                {
+                    xtype:'button',
+                    ui:'soft-cyan',
+                    iconCls: 'fa fa-download',
+                    text: 'Add to Dashboard',
+                    handler: 'onAddToDashboard'
                 }
             ]
         }

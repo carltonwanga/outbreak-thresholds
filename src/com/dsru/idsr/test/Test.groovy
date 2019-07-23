@@ -1,4 +1,5 @@
-import com.dsru.idsr.service.ConfirmationIvrService
-import com.dsru.idsr.service.MeningitisThresholdComputationService
-
-new ConfirmationIvrService().initiateMalariaConfirmation(6114);
+Calendar calendar = new GregorianCalendar();
+Date currentTime = new Date();
+calendar.setTime(currentTime);
+System.out.println("Day of week:" +
+        calendar.get(Calendar.DAY_OF_WEEK));

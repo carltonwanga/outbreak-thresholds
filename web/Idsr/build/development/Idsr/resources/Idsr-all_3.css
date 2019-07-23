@@ -9736,3 +9736,23 @@
 .circular {
     border-radius: 50%;
 }
+/* D:/work/instedd/dsru-web/idsr/web/Idsr/sass/src/view/main/Main.scss:388 */
+.dashboard-tile span {
+    display: inline-block;
+    text-align: center;
+    padding: 30px 0;
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+    font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #fff;
+    font-weight: bold;
+    font-size: 24px;
+    margin: auto;
+    width: 100%;
+}
+/* D:/work/instedd/dsru-web/idsr/web/Idsr/sass/src/view/main/Main.scss:402 */
+.dashboard-tile span .main-txt {
+    font-size: 28px;
+}
